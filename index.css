@@ -1,0 +1,219 @@
+/* Custom Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #1a1a1a; /* Darker background */
+    overflow-x: hidden;
+}
+.font-brand {
+    font-family: 'Paytone One', sans-serif;
+}
+.font-cursive {
+    font-family: 'Dancing Script', cursive;
+}
+/* Hide scrollbar for aesthetics */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* Custom styles for video player progress bar */
+progress[value] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+}
+progress[value]::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 9999px;
+}
+progress[value]::-webkit-progress-value {
+    background-color: #EC407A; /* Pink-500 */
+    border-radius: 9999px;
+    transition: width 0.1s linear;
+}
+/* Custom styling for video player volume slider */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100px;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    background: rgba(255, 255, 255, 0.4);
+    height: 4px;
+    border-radius: 9999px;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -6px;
+    background-color: #EC407A;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* Z-index hierarchy */
+#main-header { z-index: 40; }
+#player-view { z-index: 50; top: 4rem; /* 64px, height of header */ }
+#add-feed-modal { z-index: 60; }
+#notification { z-index: 70; }
+#platform-banner { z-index: 52; }
+#sticky-player-wrapper { z-index: 51; }
+#mobile-platform-toggle { z-index: 30; }
+
+#main-content {
+    height: calc(100vh - 4rem);
+}
+
+/* Masonry grid item sizing */
+.grid-item {
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, outline-color 0.3s ease-in-out;
+    outline: 4px solid transparent;
+    outline-offset: 2px;
+}
+.grid-item.is-playing, .x-card.is-playing {
+    outline-color: #EC407A;
+    box-shadow: 0 0 15px rgba(236, 64, 122, 0.7);
+    transform: scale(1.02);
+}
+
+/* --- Player View Styles --- */
+#player-view #player-container {
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 0 25px rgba(236, 64, 122, 0.6);
+}
+
+#player-feed.masonry-grid {
+    margin: 0 auto;
+}
+
+.list-view-card {
+    transition: background-color 0.2s ease-in-out, outline-color 0.2s ease-in-out;
+    outline: 2px solid transparent;
+    outline-offset: -2px; /* Inset outline */
+}
+
+.list-view-card.is-playing {
+    outline-color: #EC407A;
+    background-color: #2d2d2d; /* A slightly lighter dark gray for highlight */
+}
+
+/* --- X Card Styles --- */
+.x-card .x-card-actions svg {
+    transition: color 0.2s ease-in-out;
+}
+.x-card .x-card-actions div:hover svg {
+    color: #EC407A;
+}
+
+/* --- Dashboard Trough Styles --- */
+.platform-trough {
+    transition: box-shadow 0.3s ease-in-out;
+}
+.platform-trough:hover {
+    box-shadow: 0 0 25px rgba(236, 64, 122, 0.6);
+}
+
+
+/* --- Live Mode Styles --- */
+#player-view.is-live-mode .grid-item {
+    display: none; /* Hide masonry items in live mode */
+}
+.live-card.is-playing {
+    outline-color: #EC407A;
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+.live-indicator-dot {
+    animation: pulse-live 1.5s infinite;
+}
+
+
+/* --- Player State Management --- */
+#embed-player, #youtube-player, #video-controls {
+    display: none; /* Hide all by default */
+}
+#player-container.youtube-active #youtube-player,
+#player-container.youtube-active #video-controls {
+    display: flex; /* Flex for controls */
+}
+#player-container.youtube-active #youtube-player {
+    display: block;
+}
+#player-container.embed-active #embed-player {
+    display: block;
+}
+
+/* Ensure embed players fill their container */
+#embed-player .tiktok-embed {
+    max-width: 100% !important;
+    min-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#embed-player iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+/* Player feed column sizing */
+.masonry-grid .grid-item { width: calc(25% - 1rem); }
+@media (max-width: 1024px) {
+    .masonry-grid .grid-item { width: calc(33.333% - 1rem); }
+}
+@media (max-width: 768px) {
+    .masonry-grid .grid-item { width: calc(50% - 1rem); }
+}
+@media (max-width: 640px) {
+    .masonry-grid .grid-item { width: 100%; }
+}
+
+/* Mobile Feed Styles */
+#mobile-feed-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.mobile-toggle-btn {
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.mobile-toggle-btn.active {
+    color: #EC407A; /* Pink-400 */
+    border-bottom-color: #EC407A;
+}
+
+.boost-btn svg {
+    fill: #f97316; /* Orange-500 for fire */
+    stroke: #f97316;
+}
+
+#loading-screen {
+    transition: opacity 0.5s ease-in-out;
+}

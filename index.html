@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIME CUTS</title>
+    <link rel="icon" id="favicon" type="image/png" href="">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script async src="https://www.tiktok.com/embed.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Paytone+One&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="text-gray-200">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-[#1a1a1a] flex flex-col items-center justify-center z-[100]">
+        <img id="loading-logo" src="" alt="Loading..." class="w-32 h-32 animate-pulse">
+        <p class="font-brand text-2xl text-pink-400 mt-4">FILLING UP TROUGH</p>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header" class="bg-gray-900/80 backdrop-blur-lg sticky top-0 shadow-lg border-b border-gray-700">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 id="header-title" class="font-brand text-xl md:text-2xl text-pink-400 tracking-wider"></h1>
+                </div>
+                <div id="main-nav" class="flex items-center gap-2">
+                     <button id="prime-cuts-btn" data-view="feed" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                         PRIME CUTS
+                     </button>
+                     <button id="hogg-wild-btn" data-view="hoggwild" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                         HOGG WILD
+                     </button>
+                      <button id="live-pen-btn" data-view="live" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                         FORAGE
+                     </button>
+                     <button id="buffett-btn" data-view="buffett" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                         BUFFETT
+                     </button>
+                     <button id="left-overs-header-btn" data-view="history" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                         LEFT-OVERS
+                     </button>
+                     <button id="mud-hole-btn" data-view="mudhole" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                         MUD HOLE
+                     </button>
+                    <button id="add-feed-btn" class="p-2 rounded-md bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors text-sm font-brand tracking-wider w-28 text-center">
+                        FEED ME
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="flex-grow flex flex-col">
+        
+        <!-- Player View (Initially Hidden) -->
+        <div id="player-view" class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm overflow-y-auto">
+             <div class="flex flex-col min-h-screen">
+                 <!-- Platform Trough Banner -->
+                 <div id="platform-banner" class="bg-gray-900/80 backdrop-blur-lg shadow-lg border-b border-gray-700 sticky top-0 flex items-center justify-center h-16">
+                     <h2 id="platform-trough-title" class="font-brand text-2xl text-pink-400 tracking-wider"></h2>
+                 </div>
+
+                 <!-- Sticky Video Player -->
+                 <div id="sticky-player-wrapper" class="sticky top-16 bg-gray-900 shadow-xl">
+                      <div id="player-container" class="relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row">
+                          <!-- Video Player -->
+                          <div class="relative w-full md:w-2/3 aspect-video bg-black">
+                              <div id="youtube-player" class="w-full h-full"></div>
+                              <div id="embed-player" class="w-full h-full"></div>
+                               <!-- Custom Controls Overlay -->
+                              <div id="video-controls" class="absolute inset-0 flex flex-col justify-between text-white opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/60 to-transparent">
+                                  <div><!-- Top Spacer --></div>
+                                  <div class="flex items-center justify-center">
+                                      <button id="play-pause-btn" aria-label="Play or Pause Video" class="p-4 bg-black/50 rounded-full text-white">
+                                          <svg id="play-icon" class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                                          <svg id="pause-icon" class="w-10 h-10 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
+                                      </button>
+                                  </div>
+                                  <div class="p-2 sm:p-4 space-y-2">
+                                      <div class="flex items-center gap-2">
+                                          <span id="current-time" class="text-xs">0:00</span>
+                                          <progress id="progress-bar" value="0" max="100" class="w-full cursor-pointer"></progress>
+                                          <span id="duration" class="text-xs">0:00</span>
+                                      </div>
+                                      <div class="flex justify-between items-center">
+                                          <div class="flex items-center gap-2">
+                                              <button id="volume-btn" aria-label="Mute or Unmute Volume" class="p-2"><svg id="volume-high-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5.071 8.036A1 1 0 016 9v2a1 1 0 01-1.447.894L2.43 10.447A1 1 0 012 9.553V8.447a1 1 0 01.43-.894l2.123-1.447a1 1 0 011.518.93zM10 5a1 1 0 011 1v8a1 1 0 11-2 0V6a1 1 0 011-1zm3.293 1.293a1 1 0 011.414 0l.001.001c.452.452.707 1.053.707 1.696V10a2.999 2.999 0 01-.708 1.992l-.001.001a1 1 0 01-1.414-1.414 1 1 0 00-.293-.707v-1.73a1 1 0 00-.292-.707 1 1 0 010-1.414z"></path></svg><svg id="volume-muted-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
+                                              <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1" class="w-24">
+                                          </div>
+                                          <button id="fullscreen-btn" aria-label="Toggle Fullscreen" class="p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4m12 4V4h-4M4 16v4h4m12-4v4h-4"></path></svg></button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- Player Info & Close Button -->
+                          <div class="w-full md:w-1/3 p-4 flex flex-col justify-between bg-gray-800">
+                              <div>
+                                  <h3 id="player-title" class="font-bold text-lg text-white">Video Title</h3>
+                                  <p id="player-author" class="text-sm text-gray-400">Author</p>
+                              </div>
+                              <div>
+                                  <button id="share-btn" class="mb-2 w-full bg-gray-700 hover:bg-pink-600 border border-pink-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
+                                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.368a3 3 0 105.367 2.684 3 3 0 00-5.367 2.684z"></path></svg>
+                                      WALLER
+                                  </button>
+                                  <button id="back-to-feed-btn" class="mb-2 w-full bg-gray-700 hover:bg-pink-600 border border-pink-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
+                                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                      PRIME CUTS
+                                  </button>
+                                  <button id="watch-again-btn" class="w-full bg-gray-700 hover:bg-pink-600 border border-pink-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2">
+                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0120.5 10.5M20 20l-1.5-1.5A9 9 0 003.5 13.5"></path></svg>
+                                      LEFT-OVERS
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                 </div>
+                 <!-- Filtered Player Feed -->
+                 <main id="player-feed" class="container mx-auto p-4 masonry-grid">
+                     <!-- Filtered video cards will be injected here -->
+                 </main>
+             </div>
+        </div>
+
+        <!-- Mobile: Single Trough View -->
+        <div id="mobile-dashboard" class="md:hidden">
+            <!-- Mobile platform toggle will be injected here -->
+            <!-- Mobile feed content will be injected here -->
+        </div>
+
+        <!-- Desktop: "Prime Cuts" Multi-column Platform Feed -->
+        <main id="platform-dashboard" class="flex-grow hidden md:flex px-4 pb-4 gap-4 overflow-x-auto">
+            <!-- Platform columns will be injected here -->
+        </main>
+        
+        <div id="loader" class="text-center py-10 hidden">
+             <svg class="animate-spin h-8 w-8 text-pink-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+             </svg>
+        </div>
+    </div>
+
+    <!-- Add Feed Modal -->
+    <div id="add-feed-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="font-bold text-xl">Add a New Feed</h3>
+                <button id="close-modal-btn" class="p-2 rounded-full hover:bg-gray-700" aria-label="Close dialog">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 space-y-4">
+                 <div>
+                    <h4 class="font-semibold mb-2">Connect Your Feeds</h4>
+                    <div class="flex flex-col gap-2">
+                        <button id="connect-youtube-btn" class="flex items-center justify-center gap-3 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled title="Coming Soon!">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"></path></svg>
+                            Connect to YouTube
+                        </button>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700"></div>
+                <div>
+                    <h4 class="font-semibold mb-2">Suggestions</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="add-suggestion-btn bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full text-sm" data-name="News">Add News</button>
+                        <button class="add-suggestion-btn bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full text-sm" data-name="Vimeo">Add Vimeo</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">Add Custom Feed</h4>
+                    <form id="custom-feed-form" class="flex gap-2">
+                        <input id="custom-feed-name" type="text" placeholder="e.g., Gaming, Cooking..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <button type="submit" class="bg-gray-700 border border-pink-600 text-white hover:bg-pink-600 transition-colors px-4 py-2 rounded-lg font-semibold">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Notification -->
+    <div id="notification" class="fixed bottom-5 right-5 bg-pink-600 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-70" role="status" aria-live="polite">
+        Notification Message
+    </div>
+    <script type="module" src="index.tsx"></script>
+</body>
+</html>
