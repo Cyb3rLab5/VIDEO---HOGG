@@ -2,93 +2,98 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
+import { GoogleGenAI, Type } from "@google/genai";
 
 // This declares the Masonry and YouTube Player libraries loaded from CDN scripts in index.html
 declare var Masonry: any;
 declare var YT: any;
 
 // --- YOUTUBE PLAYER API CALLBACK ---
-// This global function is called by the YouTube Iframe API script when it's ready.
+/**
+ * This global function is called by the YouTube Iframe API script when it's ready.
+ * It dispatches a custom event to signal that the API can be used.
+ */
 (window as any).onYouTubeIframeAPIReady = () => {
     document.dispatchEvent(new Event('youtube-api-ready'));
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // --- ASSET LOADING ---
-    try {
-        const [logoResponse] = await Promise.all([
-            fetch('./src/assets/logo.b64'),
-        ]);
-        if (!logoResponse.ok) throw new Error('Asset fetch failed');
-        
-        const logoB64 = await logoResponse.text();
-        
-        const logoSrc = `data:image/png;base64,${logoB64}`;
+    // =================================================================================
+    // --- CONFIG, CONSTANTS & STATE ---
+    // =================================================================================
 
-        (document.getElementById('favicon') as HTMLLinkElement).href = logoSrc;
-        (document.getElementById('loading-logo') as HTMLImageElement).src = logoSrc;
-    } catch (e) {
-        console.error('Failed to load branding assets.', e);
-    }
-    
-    // --- CONFIG & STATE ---
-    let allVideos: {[key: string]: any[]} = {};
-    let liveVideos: any[] = [];
-    let isLoading = false;
-    let currentAppView = 'feed';
-    let currentPlayerPlatform: string | null = null;
-    let hoggWildPlaylist: any[] = [];
-    let currentHoggWildIndex = 0;
-    let currentlyPlayingVideoId: string | null = null;
-    let watchHistory: any[] = [];
-    const videosPerPage = 20;
-    let pageTrackers: {[key: string]: number} = {};
-    let platforms = [
-        { id: 'youtube', name: 'YouTube', query: 'Viral' },
-        { id: 'tiktok', name: 'TikTok', query: 'Trending' },
-        { id: 'twitch', name: 'Twitch', query: 'Live' },
-        { id: 'x', name: 'X', query: 'Breaking' }
-    ];
-    let masonryPlayer: any;
-    let liveUpdateInterval: number;
-    let ytPlayer: any = null;
-    let playerUpdateInterval: number;
-    let isYtPlayerReady = false;
-    let queuedYouTubeVideo: any | null = null;
-    let previousActiveElement: HTMLElement | null = null;
-    let mobileActivePlatform: string = 'all';
+    const AI_INSTANCE = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const VIDEOS_PER_PAGE = 20;
 
-    // --- ELEMENTS ---
+    const state = {
+        allVideos: {} as {[key: string]: any[]},
+        liveVideos: [] as any[],
+        watchHistory: [] as any[],
+        hoggWildPlaylist: [] as any[],
+        buffetPlaylist: [] as any[],
+
+        isLoading: false,
+        currentAppView: 'feed', // 'feed', 'player', 'live', 'buffet', 'hoggwild', 'history', 'mudhole'
+        currentPlayerPlatform: null as string | null,
+        currentHoggWildIndex: 0,
+        currentBuffetIndex: 0,
+        currentlyPlayingVideoId: null as string | null,
+        pageTrackers: {} as {[key: string]: number},
+        platforms: [
+            { id: 'youtube', name: 'YouTube', query: 'Viral' },
+            { id: 'tiktok', name: 'TikTok', query: 'Trending' },
+            { id: 'twitch', name: 'Twitch', query: 'Live' },
+            { id: 'x', name: 'X', query: 'Breaking' }
+        ],
+        
+        masonryPlayer: null as any,
+        liveUpdateInterval: 0,
+        ytPlayer: null as any,
+        playerUpdateInterval: 0,
+        isYtPlayerReady: false,
+        queuedYouTubeVideo: null as any | null,
+        previousActiveElement: null as HTMLElement | null,
+        mobileActivePlatform: 'all',
+        notificationTimeout: 0,
+    };
+
+    // =================================================================================
+    // --- DOM ELEMENTS ---
+    // =================================================================================
+
+    // Main Layout
     const desktopDashboard = document.getElementById('platform-dashboard') as HTMLElement;
     const mobileDashboard = document.getElementById('mobile-dashboard') as HTMLElement;
     const playerView = document.getElementById('player-view') as HTMLElement;
-    const playerFeed = document.getElementById('player-feed') as HTMLElement;
-    const platformTroughTitle = document.getElementById('platform-trough-title') as HTMLElement;
     const loader = document.getElementById('loader') as HTMLElement;
+    const notification = document.getElementById('notification') as HTMLElement;
     
-    // Header elements
+    // Header
     const headerTitle = document.getElementById('header-title') as HTMLElement;
     const navButtons = document.querySelectorAll('#main-nav .nav-btn') as NodeListOf<HTMLElement>;
     const primeCutsBtn = document.getElementById('prime-cuts-btn') as HTMLElement;
     const hoggWildBtn = document.getElementById('hogg-wild-btn') as HTMLElement;
     const livePenBtn = document.getElementById('live-pen-btn') as HTMLElement;
-    const buffettBtn = document.getElementById('buffett-btn') as HTMLElement;
+    const buffetBtn = document.getElementById('buffet-btn') as HTMLElement;
     const mudHoleBtn = document.getElementById('mud-hole-btn') as HTMLElement;
     const leftOversHeaderBtn = document.getElementById('left-overs-header-btn') as HTMLElement;
     
+    // Player View
+    const playerFeed = document.getElementById('player-feed') as HTMLElement;
+    const platformTroughTitle = document.getElementById('platform-trough-title') as HTMLElement;
+    const playerContainer = document.getElementById('player-container') as HTMLElement;
+    const embedPlayer = document.getElementById('embed-player') as HTMLElement;
     const playerTitle = document.getElementById('player-title') as HTMLElement;
     const playerAuthor = document.getElementById('player-author') as HTMLElement;
+    
+    // Player Action Buttons
     const backToFeedBtn = document.getElementById('back-to-feed-btn') as HTMLElement;
     const shareBtn = document.getElementById('share-btn') as HTMLElement;
     const watchAgainBtn = document.getElementById('watch-again-btn') as HTMLElement;
+    const buffetAddFeedBtn = document.getElementById('buffet-add-feed-btn') as HTMLElement;
     
-    const addFeedModal = document.getElementById('add-feed-modal') as HTMLElement;
-    const addFeedBtn = document.getElementById('add-feed-btn') as HTMLElement;
-    const closeModalBtn = document.getElementById('close-modal-btn') as HTMLElement;
-    const customFeedForm = document.getElementById('custom-feed-form') as HTMLFormElement;
-    const customFeedNameInput = document.getElementById('custom-feed-name') as HTMLInputElement;
-    
+    // Player Controls
     const playPauseBtn = document.getElementById('play-pause-btn') as HTMLElement;
     const playIcon = document.getElementById('play-icon') as HTMLElement;
     const pauseIcon = document.getElementById('pause-icon') as HTMLElement;
@@ -100,13 +105,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     const volumeMutedIcon = document.getElementById('volume-muted-icon') as HTMLElement;
     const volumeSlider = document.getElementById('volume-slider') as HTMLInputElement;
     const fullscreenBtn = document.getElementById('fullscreen-btn') as HTMLElement;
-    const notification = document.getElementById('notification') as HTMLElement;
-    const playerContainer = document.getElementById('player-container') as HTMLElement;
-    const embedPlayer = document.getElementById('embed-player') as HTMLElement;
-    let notificationTimeout: number;
 
-    // --- ASSETS ---
-     const platformLogos: {[key: string]: string} = {
+    // Add Feed Modal
+    const addFeedModal = document.getElementById('add-feed-modal') as HTMLElement;
+    const addFeedBtn = document.getElementById('add-feed-btn') as HTMLElement;
+    const closeModalBtn = document.getElementById('close-modal-btn') as HTMLElement;
+    const customFeedForm = document.getElementById('custom-feed-form') as HTMLFormElement;
+    const customFeedNameInput = document.getElementById('custom-feed-name') as HTMLInputElement;
+    
+    // Mobile Elements
+    const moreMenuModal = document.getElementById('more-menu-modal') as HTMLElement;
+    const openMoreMenuBtn = document.getElementById('more-menu-btn') as HTMLElement;
+    const closeMoreMenuBtn = document.getElementById('close-more-menu-btn') as HTMLElement;
+    const leftOversMenuBtn = document.getElementById('left-overs-menu-btn') as HTMLElement;
+    const mudHoleMenuBtn = document.getElementById('mud-hole-menu-btn') as HTMLElement;
+    const feedMeMenuBtn = document.getElementById('feed-me-menu-btn') as HTMLElement;
+    const mobilePlayerTitle = document.getElementById('mobile-player-title') as HTMLElement;
+    const mobilePlayerAuthor = document.getElementById('mobile-player-author') as HTMLElement;
+    const mobileShareBtn = document.getElementById('mobile-share-btn') as HTMLElement;
+
+    // =================================================================================
+    // --- ASSETS & HELPERS ---
+    // =================================================================================
+
+    const platformLogos: {[key: string]: string} = {
         youtube: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z"></path></svg>`,
         tiktok: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525,2.007c-0.104-0.033-0.213-0.05-0.323-0.05C8.831,1.957,6,4.789,6,8.161v7.402c0,0.113,0.016,0.224,0.046,0.33c-0.021,0.081-0.034,0.165-0.034,0.253c0,0.822,0.667,1.488,1.488,1.488 c0.821,0,1.488-0.667,1.488-1.488c0-0.038-0.002-0.076-0.005-0.113C8.98,16.035,9,16.01,9,15.986V8.161c0-2.228,1.808-4.037,4.037-4.037 c0.162,0,0.32,0.01,0.475,0.029v3.251c0,2.155-1.742,3.896-3.896,3.896c-0.093,0-0.185-0.003-0.276-0.009v3.085 c0,0.003,0,0.005,0.001,0.008c0.09,0.006,0.182,0.009,0.275,0.009c2.909,0,5.271-2.362,5.271-5.271V5.424 C14.993,3.593,13.911,2.181,12.525,2.007z"></path></svg>`,
         twitch: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M4.265 3 3 6.204v11.592h4.265V21l3.199-3.199h3.199L21 10.998V3H4.265zM17.801 10.463 15.6 12.667h-3.199l-2.666 2.666v-2.666H6.4v-8.53h11.401v6.33z"/><path d="m14.532 6.331-1.066 2.133h-2.133v-2.133zm-4.265 0-1.066 2.133H7.068v-2.133z"/></svg>`,
@@ -115,13 +137,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         default: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>`
     };
     
-    // --- API & DATA FUNCTIONS ---
+    /** Formats a number into a compact string (e.g., 1200 -> 1K, 1500000 -> 1.5M). */
     const formatNumber = (num: number): string => {
         if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
         if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
         return num.toString();
     };
 
+    /** Formats seconds into a MM:SS string. */
+    const formatTime = (time: number): string => {
+        if (isNaN(time)) return '0:00';
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    // =================================================================================
+    // --- API & DATA FUNCTIONS ---
+    // =================================================================================
+
+    /**
+     * A collection of mock services to provide data for development and as a fallback
+     * when live APIs are unavailable.
+     */
     const MockVideoAPIService = {
         _idCounter: 0,
         _liveIdCounter: 1000,
@@ -138,8 +176,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             x: [ "This clip is breaking the internet. A {noun} doing something {adjective}.", "Everyone is talking about this video right now. #{noun}", "Can't believe I just saw a {noun} go totally {adjective}!"],
             default: ["{adjective} {noun} Clip Goes Viral" ]
         },
-        _streamerNames: ['StreamHogg', 'ProGamerX', 'PixelQueen', 'RageQuitRoy', 'SnackStreamz'],
-        _gameNames: ['Hogcraft', 'Call of Duty: Modern Boarfare', 'League of Legends', 'Fortnite', 'Valorant', 'Apex Legends'],
+        _streamerNames: ['StreamOink', 'ProGamerX', 'PixelQueen', 'RageQuitRoy', 'SnackStreamz'],
+        _gameNames: ['Oinkcraft', 'Call of Duty: Modern Boarfare', 'League of Legends', 'Fortnite', 'Valorant', 'Apex Legends'],
 
         _generateMockStream: function() {
             this._liveIdCounter++;
@@ -305,8 +343,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // =================================================================================
     // --- RENDER FUNCTIONS ---
-    const renderVideoCard = (video: any) => {
+    // =================================================================================
+
+    /** Creates and returns an HTML element for a standard video card. */
+    const renderVideoCard = (video: any): HTMLElement => {
         const card = document.createElement('div');
         const aspectRatio = video.orientation === 'portrait' ? 'aspect-[9/16]' : 'aspect-video';
         card.className = `group relative overflow-hidden rounded-lg shadow-md cursor-pointer ${aspectRatio} bg-gray-700 grid-item`;
@@ -343,7 +385,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return card;
     };
 
-    const renderTwitchCard = (stream: any) => {
+    /** Creates and returns an HTML element for a Twitch stream card. */
+    const renderTwitchCard = (stream: any): HTMLElement => {
         const card = document.createElement('div');
         card.className = 'group relative overflow-hidden rounded-lg shadow-md cursor-pointer aspect-video bg-gray-700 grid-item';
         card.dataset.videoId = stream.id;
@@ -370,7 +413,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return card;
     };
     
-    const renderXCard = (post: any) => {
+    /** Creates and returns an HTML element for an X (Twitter) post card. */
+    const renderXCard = (post: any): HTMLElement => {
         const card = document.createElement('div');
         card.className = 'x-card bg-gray-800 rounded-lg p-4 flex flex-col gap-3 cursor-pointer hover:bg-gray-700 transition-colors duration-200 grid-item';
         card.dataset.videoId = post.id;
@@ -415,7 +459,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return card;
     };
 
-    const renderLiveVideoCard = (video: any) => {
+    /** Creates and returns an HTML element for a live video card (list view). */
+    const renderLiveVideoCard = (video: any): HTMLElement => {
         const card = document.createElement('div');
         card.className = 'live-card bg-gray-800 rounded-lg p-3 flex gap-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200 outline-4 outline-transparent outline-offset-2';
         card.dataset.videoId = video.id;
@@ -437,47 +482,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         return card;
     };
 
-    const renderVideoCardListView = (video: any) => {
+    /** Creates and returns an HTML element for a Buffet recommendation card (list view). */
+    const renderBuffetCard = (video: any): HTMLElement => {
         const card = document.createElement('div');
-        card.className = 'list-view-card flex gap-4 p-2 rounded-lg cursor-pointer hover:bg-gray-700/50';
+        card.className = 'buffet-card list-view-card flex gap-4 p-3 rounded-lg cursor-pointer hover:bg-gray-700/50 border border-transparent hover:border-pink-500/50';
         card.dataset.videoId = video.id;
         card.dataset.platform = video.platform;
-
-        card.innerHTML = `
-            <div class="w-40 flex-shrink-0">
-                <img src="${video.thumbnailUrl}" alt="${video.title}" class="w-full h-full object-cover rounded-md aspect-video">
-            </div>
-            <div class="flex flex-col justify-center overflow-hidden">
-                <h3 class="font-semibold text-white text-sm truncate">${video.title}</h3>
-                <p class="text-xs text-gray-400 truncate">by ${video.author}</p>
-                <p class="text-xs text-gray-400 mt-1">${formatNumber(video.viewCount)} views</p>
-            </div>
-        `;
-        return card;
-    };
-
-    const renderXCardListView = (post: any) => {
-        const card = document.createElement('div');
-        card.className = 'list-view-card flex gap-4 p-2 rounded-lg cursor-pointer hover:bg-gray-700/50';
-        card.dataset.videoId = post.id;
-        card.dataset.platform = post.platform;
+    
+        // Left side - Thumbnail
+        const thumbnailContainer = document.createElement('div');
+        thumbnailContainer.className = 'w-40 flex-shrink-0 relative';
         
-        const xLogoSmall = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-300" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>`;
-        const mediaThumb = post.thumbnailUrl ? `<div class="w-24 h-16 flex-shrink-0"><img src="${post.thumbnailUrl}" alt="Post media" class="w-full h-full object-cover rounded-md"></div>` : `<div class="w-24 h-16 flex-shrink-0 bg-gray-700 rounded-md flex items-center justify-center">${xLogoSmall}</div>`;
-
-        card.innerHTML = `
-            ${mediaThumb}
-            <div class="flex flex-col justify-center overflow-hidden">
-                <div class="flex items-center gap-2">
-                    <p class="font-semibold text-white text-sm truncate">${post.author}</p>
-                    <p class="text-xs text-gray-400 truncate">${post.authorHandle}</p>
-                </div>
-                <p class="text-xs text-gray-300 truncate mt-1">${post.text}</p>
-            </div>
-        `;
+        const thumbnailImg = document.createElement('img');
+        thumbnailImg.src = video.thumbnailUrl;
+        thumbnailImg.alt = video.title;
+        thumbnailImg.className = 'w-full h-full object-cover rounded-md aspect-video';
+        thumbnailContainer.appendChild(thumbnailImg);
+        
+        const logoContainer = document.createElement('div');
+        logoContainer.className = 'absolute top-1 left-1 bg-black/50 p-1 rounded-full';
+        if (platformLogos[video.platform]) {
+            const logoWrapper = document.createElement('div');
+            logoWrapper.className = 'w-6 h-6 text-white';
+            logoWrapper.innerHTML = platformLogos[video.platform].replace(/w-12 h-12/g, '');
+            logoContainer.appendChild(logoWrapper);
+        }
+        thumbnailContainer.appendChild(logoContainer);
+    
+        // Right side - Info
+        const infoContainer = document.createElement('div');
+        infoContainer.className = 'flex flex-col justify-center overflow-hidden';
+        
+        const title = document.createElement('h3');
+        title.className = 'font-semibold text-white text-sm truncate';
+        title.textContent = video.title;
+        infoContainer.appendChild(title);
+        
+        const author = document.createElement('p');
+        author.className = 'text-xs text-gray-400 truncate';
+        author.textContent = `by ${video.author}`;
+        infoContainer.appendChild(author);
+    
+        const reason = document.createElement('p');
+        reason.className = 'text-xs text-pink-300 italic mt-2 reason-text';
+        const reasonPrefix = document.createElement('span');
+        reasonPrefix.className = 'font-bold not-italic text-pink-400';
+        reasonPrefix.textContent = 'OINK AI says: ';
+        reason.appendChild(reasonPrefix);
+        reason.appendChild(document.createTextNode(video.reason));
+        infoContainer.appendChild(reason);
+    
+        card.appendChild(thumbnailContainer);
+        card.appendChild(infoContainer);
+    
         return card;
     };
 
+    /** Renders a full column for a platform in the desktop dashboard. */
     const renderDashboardColumn = (platform: {id: string, name: string}) => {
         const columnContainer = document.createElement('div');
         columnContainer.id = `platform-column-${platform.id}`;
@@ -489,24 +550,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
         desktopDashboard.appendChild(columnContainer);
     };
-
-    const updatePlayerHighlighting = () => {
-        document.querySelectorAll('.is-playing').forEach(el => el.classList.remove('is-playing'));
-        if (currentlyPlayingVideoId) {
-            document.querySelectorAll(`[data-video-id="${currentlyPlayingVideoId}"]`).forEach(el => el.classList.add('is-playing'));
-        }
-    };
-
+    
+    /** Re-renders the content of a single platform column with sorted videos. */
     const rerenderColumn = (platformId: string) => {
         const columnContent = document.getElementById(`column-content-${platformId}`);
-        if (!columnContent || !allVideos[platformId]) return;
+        if (!columnContent || !state.allVideos[platformId]) return;
 
+        // Sort videos by virality, except for X and Twitch which are chronological/live.
         if(platformId !== 'x' && platformId !== 'twitch') {
-            allVideos[platformId].sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
+            state.allVideos[platformId].sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
         }
         
         const fragment = document.createDocumentFragment();
-        allVideos[platformId].forEach(video => {
+        state.allVideos[platformId].forEach(video => {
             if (platformId === 'x') {
                 fragment.appendChild(renderXCard(video));
             } else if (platformId === 'twitch') {
@@ -519,17 +575,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         columnContent.appendChild(fragment);
     };
 
+    /** Renders the entire feed for the mobile view based on the active platform filter. */
     const renderMobileFeed = () => {
         const mobileFeedContent = document.getElementById('mobile-feed-content');
         if (!mobileFeedContent) return;
 
         let videosToDisplay: any[] = [];
-        if (mobileActivePlatform === 'all') {
-            videosToDisplay = Object.values(allVideos).flat();
+        if (state.mobileActivePlatform === 'all') {
+            videosToDisplay = Object.values(state.allVideos).flat();
             videosToDisplay.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
         } else {
-            videosToDisplay = [...(allVideos[mobileActivePlatform] || [])];
-             if (mobileActivePlatform !== 'x' && mobileActivePlatform !== 'twitch') {
+            videosToDisplay = [...(state.allVideos[state.mobileActivePlatform] || [])];
+             if (state.mobileActivePlatform !== 'x' && state.mobileActivePlatform !== 'twitch') {
                 videosToDisplay.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
             }
         }
@@ -546,584 +603,746 @@ document.addEventListener('DOMContentLoaded', async () => {
         mobileFeedContent.innerHTML = '';
         mobileFeedContent.appendChild(fragment);
     }
-
+    
+    /** Updates the content of the player's side feed based on the current view. */
     const updatePlayerFeedDisplay = () => {
-        if (currentAppView === 'buffett' || currentAppView === 'mudhole') {
-            return; // These views manage their own content
-        }
         playerFeed.innerHTML = '';
-        if (masonryPlayer) {
-            masonryPlayer.destroy();
-            masonryPlayer = null;
+        if (state.masonryPlayer) {
+            state.masonryPlayer.destroy();
+            state.masonryPlayer = null;
         }
-        // Remove masonry class by default, add it back if needed
         playerFeed.classList.remove('masonry-grid'); 
 
-        let videosToDisplay: any[] = [];
+        // Buffet and Mud Hole views have custom static content and are handled in their respective functions.
+        if (state.currentAppView === 'buffet' || state.currentAppView === 'mudhole') return;
 
-        if (currentAppView === 'live') {
-            // Live view uses a list, not masonry
-            liveVideos.forEach(video => playerFeed.appendChild(renderLiveVideoCard(video)));
-            updatePlayerHighlighting();
-            return;
+        let videosToDisplay: any[] = [];
+        let useMasonry = true;
+        let cardRenderer = renderVideoCard;
+
+        switch(state.currentAppView) {
+            case 'live':
+                videosToDisplay = state.liveVideos;
+                useMasonry = false;
+                cardRenderer = renderLiveVideoCard;
+                break;
+            case 'history':
+                videosToDisplay = state.watchHistory;
+                break;
+            case 'hoggwild':
+                videosToDisplay = state.hoggWildPlaylist;
+                break;
+            case 'player':
+                if (state.currentPlayerPlatform) {
+                    const sortedPlatformVideos = [...state.allVideos[state.currentPlayerPlatform]];
+                    if (state.currentPlayerPlatform !== 'x' && state.currentPlayerPlatform !== 'twitch') {
+                         sortedPlatformVideos.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
+                    }
+                    videosToDisplay = sortedPlatformVideos;
+                }
+                break;
         }
         
-        // All other player views use masonry
-        if (currentAppView === 'history') {
-            videosToDisplay = watchHistory;
-        } else if (hoggWildPlaylist.length > 0) {
-            videosToDisplay = hoggWildPlaylist;
-        } else if (currentPlayerPlatform) {
-            const sortedPlatformVideos = [...allVideos[currentPlayerPlatform]];
-            if (currentPlayerPlatform !== 'x' && currentPlayerPlatform !== 'twitch') {
-                 sortedPlatformVideos.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
-            }
-            videosToDisplay = sortedPlatformVideos;
-        }
-
-        playerFeed.classList.add('masonry-grid');
         const fragment = document.createDocumentFragment();
         videosToDisplay.forEach(video => {
             let card;
-            if (video.platform === 'x') {
-                card = renderXCard(video);
-            } else if (video.platform === 'twitch') {
-                card = renderTwitchCard(video);
-            } else {
-                card = renderVideoCard(video);
-            }
+            if (video.platform === 'x') card = renderXCard(video);
+            else if (video.platform === 'twitch') card = renderTwitchCard(video);
+            else card = cardRenderer(video); // Use the determined renderer
             fragment.appendChild(card);
         });
         playerFeed.appendChild(fragment);
-       
-        // We need to give the browser a moment to render the items before initializing Masonry
-        setTimeout(() => {
-            if (document.getElementById('player-feed')) { // Ensure element still exists
-                masonryPlayer = initMasonry(playerFeed);
-                updatePlayerHighlighting();
-            }
-        }, 100);
-    };
 
-    // --- CORE LOGIC ---
-    const updateHeader = (view: string, sectionName: string) => {
-        headerTitle.innerHTML = `VIDEO HOGG - <span class="font-cursive">${sectionName}</span>`;
-        navButtons.forEach(btn => {
-            if (btn.dataset.view === view) {
-                btn.classList.add('hidden');
-            } else {
-                btn.classList.remove('hidden');
-            }
-        });
-    };
-
-    const loadMoreVideos = async (specificPlatform: {id: string, name: string, query: string} | null = null) => {
-        if (isLoading) return;
-        isLoading = true;
-        loader.classList.remove('hidden');
-
-        const platformsToLoad = specificPlatform ? [specificPlatform] : platforms;
-
-        try {
-            for (const platform of platformsToLoad) {
-                if (platform.id === 'tiktok') {
-                    // TikTok doesn't have pagination in this implementation
-                    allVideos['tiktok'] = await TikTokVideoService.fetchTrending();
-                } else if (platform.id === 'twitch') {
-                    // Twitch also fetches a single list of top streams
-                    allVideos['twitch'] = await TwitchVideoService.fetchTopStreams();
-                } else {
-                     // Handles youtube, x, and other custom feeds with pagination
-                     const page = pageTrackers[platform.id] || 1;
-                     const newVideos = await MockVideoAPIService.fetchVideos(platform, page, videosPerPage);
-                     pageTrackers[platform.id] = page + 1;
-                     allVideos[platform.id] = [...(allVideos[platform.id] || []), ...newVideos];
+        if (useMasonry) {
+            playerFeed.classList.add('masonry-grid');
+            // Defer masonry initialization to allow DOM to update
+            setTimeout(() => {
+                if (document.getElementById('player-feed')) {
+                    state.masonryPlayer = initMasonry(playerFeed);
+                    updatePlayerHighlighting();
                 }
-                
-                if (currentAppView === 'feed') {
-                    rerenderColumn(platform.id);
-                    renderMobileFeed();
-                } else if (currentAppView === 'player' && currentPlayerPlatform === platform.id) {
-                    updatePlayerFeedDisplay();
-                }
-            }
-        } finally {
-            isLoading = false;
-            loader.classList.add('hidden');
+            }, 100);
+        } else {
+             updatePlayerHighlighting();
         }
     };
 
-    const checkForNewLiveVideos = async () => {
-        const newLiveList = await MockVideoAPIService.fetchLiveVideos();
-        if (newLiveList.length > 0 && (newLiveList.length !== liveVideos.length || newLiveList[0].id !== liveVideos[0]?.id)) {
-            liveVideos = newLiveList;
-            if (currentAppView === 'live') {
-                updatePlayerFeedDisplay();
-            }
-        }
-    };
-
-    const initMasonry = (element: HTMLElement) => {
+    /** Initializes a Masonry grid layout on a given element. */
+    const initMasonry = (element: HTMLElement): any => {
          return new Masonry(element, {
              itemSelector: '.grid-item',
              percentPosition: true,
              gutter: 16
         });
     };
-    
-    const openPlayerView = (platformId: string) => {
-        currentAppView = 'player';
-        currentPlayerPlatform = platformId;
+
+    // =================================================================================
+    // --- CORE LOGIC & VIEW MANAGEMENT ---
+    // =================================================================================
+
+    /**
+     * Updates the active state of navigation buttons for both desktop and mobile.
+     * @param view The name of the currently active view.
+     */
+    const updateNavStates = (view: string) => {
+        headerTitle.textContent = 'OINK';
+        // The 'more' menu on mobile contains 'history' and 'mudhole'
+        const mobileView = (view === 'history' || view === 'mudhole') ? 'more' : view;
+
+        navButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === view);
+        });
+
+        const allBottomNavButtons = document.querySelectorAll('#mobile-bottom-nav .bottom-nav-btn, #mobile-bottom-nav-player .bottom-nav-btn') as NodeListOf<HTMLElement>;
+        allBottomNavButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.view === mobileView);
+        });
+    };
+
+    /**
+     * Fetches more videos for a specific platform or all platforms.
+     * @param specificPlatform - If provided, only fetches for this platform.
+     */
+    const loadMoreVideos = async (specificPlatform: {id: string, name: string, query: string} | null = null) => {
+        if (state.isLoading) return;
+        state.isLoading = true;
+        loader.classList.remove('hidden');
+
+        const platformsToLoad = specificPlatform ? [specificPlatform] : state.platforms;
+
+        try {
+            for (const platform of platformsToLoad) {
+                if (platform.id === 'tiktok') {
+                    state.allVideos['tiktok'] = await TikTokVideoService.fetchTrending();
+                } else if (platform.id === 'twitch') {
+                    state.allVideos['twitch'] = await TwitchVideoService.fetchTopStreams();
+                } else {
+                     const page = state.pageTrackers[platform.id] || 1;
+                     const newVideos = await MockVideoAPIService.fetchVideos(platform, page, VIDEOS_PER_PAGE);
+                     state.pageTrackers[platform.id] = page + 1;
+                     state.allVideos[platform.id] = [...(state.allVideos[platform.id] || []), ...newVideos];
+                }
+                
+                if (state.currentAppView === 'feed') {
+                    rerenderColumn(platform.id);
+                    renderMobileFeed();
+                } else if (state.currentAppView === 'player' && state.currentPlayerPlatform === platform.id) {
+                    updatePlayerFeedDisplay();
+                }
+            }
+        } finally {
+            state.isLoading = false;
+            loader.classList.add('hidden');
+        }
+    };
+
+    /** Checks for new live videos and updates the state and UI if necessary. */
+    const checkForNewLiveVideos = async () => {
+        const newLiveList = await MockVideoAPIService.fetchLiveVideos();
+        if (newLiveList.length > 0 && (newLiveList.length !== state.liveVideos.length || newLiveList[0].id !== state.liveVideos[0]?.id)) {
+            state.liveVideos = newLiveList;
+            if (state.currentAppView === 'live') {
+                updatePlayerFeedDisplay();
+            }
+        }
+    };
+
+    /** Handles the common UI transition to the player view. */
+    const transitionToPlayerView = (view: string, title: string) => {
+        state.currentAppView = view;
+        state.hoggWildPlaylist = [];
+        state.buffetPlaylist = [];
+        updateNavStates(view);
+
         desktopDashboard.classList.add('hidden');
         mobileDashboard.classList.add('hidden');
         playerView.classList.remove('hidden');
-        playerView.classList.remove('is-live-mode');
         document.body.style.overflow = 'hidden';
 
-        const platform = platforms.find(p => p.id === platformId);
-        if (platform) platformTroughTitle.innerHTML = `${platform.name} - <span class="font-cursive">Trough</span>`;
+        platformTroughTitle.innerHTML = title;
+
+        // Reset player state
+        state.currentlyPlayingVideoId = null;
+        if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') state.ytPlayer.stopVideo();
+        embedPlayer.innerHTML = '';
+        playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
+        updatePlayerHighlighting();
+    };
+
+    /** Opens the player view for a specific platform's content trough. */
+    const openPlayerView = (platformId: string) => {
+        state.currentPlayerPlatform = platformId;
+        const platform = state.platforms.find(p => p.id === platformId);
+        const title = platform ? `${platform.name} - <span class="font-cursive">Trough</span>` : 'Trough';
         
+        transitionToPlayerView('player', title);
+        playerView.classList.remove('is-live-mode');
+        buffetAddFeedBtn.classList.add('hidden');
+
+        mobilePlayerTitle.textContent = 'Select a video to play';
+        mobilePlayerAuthor.textContent = 'from the trough';
         updatePlayerFeedDisplay();
     };
     
+    /** Opens the live video view. */
     const openLiveView = () => {
-        if (liveVideos.length === 0) {
+        if (state.liveVideos.length === 0) {
             showNotification("Connecting to the forage... try again in a moment.");
             return;
         }
-        currentAppView = 'live';
-        currentPlayerPlatform = null;
-        hoggWildPlaylist = [];
-        updateHeader('live', 'Forage');
-
-        desktopDashboard.classList.add('hidden');
-        mobileDashboard.classList.add('hidden');
+        state.currentPlayerPlatform = null;
+        transitionToPlayerView('live', `OINK PEN - <span class="font-cursive">Forage</span>`);
         playerView.classList.add('is-live-mode');
-        playerView.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        platformTroughTitle.innerHTML = `HOGG PEN - <span class="font-cursive">Forage</span>`;
-
+        buffetAddFeedBtn.classList.add('hidden');
         updatePlayerFeedDisplay();
-        playVideo(liveVideos[0]);
+        playVideo(state.liveVideos[0]);
     };
 
-    const openBuffettView = () => {
-        currentAppView = 'buffett';
-        currentPlayerPlatform = null;
-        hoggWildPlaylist = [];
-        updateHeader('buffett', 'The Buffett');
-    
-        desktopDashboard.classList.add('hidden');
-        mobileDashboard.classList.add('hidden');
+    /** Opens the AI-powered Buffet view. */
+    const openBuffetView = async () => {
+        state.currentPlayerPlatform = null;
+        transitionToPlayerView('buffet', `The Buffet - <span class="font-cursive">Personalized Feed</span>`);
         playerView.classList.remove('is-live-mode');
-        playerView.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        
-        platformTroughTitle.innerHTML = `The Buffett - <span class="font-cursive">Personalized Feed</span>`;
-        playerTitle.textContent = "Your Buffett is being prepared...";
+        buffetAddFeedBtn.classList.remove('hidden');
+
+        if (state.watchHistory.length === 0) {
+            playerFeed.innerHTML = `
+                <div class="text-center text-gray-400 p-8 flex flex-col items-center gap-4">
+                    <h3 class="font-brand text-2xl text-pink-400 mb-2">Your Buffet is Empty!</h3>
+                    <p>Watch some videos to get started, or use the "FEED ME" button to add more sources and discover new slop!</p>
+                </div>
+            `;
+            playerTitle.textContent = "Your Buffet is waiting";
+            playerAuthor.textContent = "Start watching to get recommendations";
+            mobilePlayerTitle.textContent = "Your Buffet is waiting";
+            mobilePlayerAuthor.textContent = "Start watching to get recommendations";
+            return;
+        }
+
+        playerTitle.textContent = "Your Buffet is being prepared...";
         playerAuthor.textContent = "Powered by Gemini";
-        playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
-        embedPlayer.innerHTML = '';
-        if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-        
+        mobilePlayerTitle.textContent = "Your Buffet is being prepared...";
+        mobilePlayerAuthor.textContent = "Powered by Gemini";
         playerFeed.innerHTML = `
-            <div class="text-center text-gray-400 p-8">
-                <h3 class="font-brand text-2xl text-pink-400 mb-2">Coming Soon!</h3>
-                <p>The Buffett will analyze your watch history across all platforms to create a hyper-personalized feed, just for you. Keep watching to fatten up your hogg!</p>
-            </div>
-        `;
-        currentlyPlayingVideoId = null;
-        updatePlayerHighlighting();
+            <div class="text-center text-gray-400 p-8 flex flex-col items-center justify-center gap-4">
+                <svg class="animate-spin h-8 w-8 text-pink-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <p>Consulting the AI chef to cook up your personalized slop...</p>
+            </div>`;
+
+        try {
+            const historyForPrompt = state.watchHistory.slice(0, 20).map(v => `'${v.title}' by ${v.author} on ${v.platform}`).join(', ');
+            const prompt = `You are a viral video recommendation expert for an app called OINK. Based on this user's watch history, suggest 10 new, engaging video titles they would love. Provide a diverse mix of platforms (youtube, tiktok, x). For each, give a short, compelling reason why the user would like it. User history: ${historyForPrompt}`;
+            
+            const response = await AI_INSTANCE.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt,
+                config: {
+                  responseMimeType: "application/json",
+                  responseSchema: {
+                     type: Type.OBJECT,
+                     properties: {
+                       recommendations: {
+                         type: Type.ARRAY,
+                         items: {
+                           type: Type.OBJECT,
+                           properties: {
+                             title: { type: Type.STRING },
+                             author: { type: Type.STRING },
+                             platform: { type: Type.STRING, enum: ['youtube', 'tiktok', 'x'] },
+                             reason: { type: Type.STRING }
+                           },
+                           required: ['title', 'author', 'platform', 'reason']
+                         }
+                       }
+                     }
+                   },
+                },
+             });
+
+            const resultJson = JSON.parse(response.text);
+            const recommendations = resultJson.recommendations || [];
+            if (recommendations.length === 0) throw new Error("AI did not return any recommendations.");
+
+            state.buffetPlaylist = recommendations.map((rec: any) => {
+                const platformVideos = state.allVideos[rec.platform] || [];
+                // Find a random video as a base, fallback to any video if none for that platform exist
+                const randomVideo = platformVideos.length > 0
+                    ? platformVideos[Math.floor(Math.random() * platformVideos.length)]
+                    : Object.values(state.allVideos).flat()[Math.floor(Math.random() * Object.values(state.allVideos).flat().length)];
+                return { ...randomVideo, ...rec, id: `buffet-${Math.random()}` };
+            });
+
+            playerFeed.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            state.buffetPlaylist.forEach(video => fragment.appendChild(renderBuffetCard(video)));
+            playerFeed.appendChild(fragment);
+
+            state.currentBuffetIndex = 0;
+            playVideo(state.buffetPlaylist[0]);
+
+        } catch (error) {
+            console.error("Gemini API call failed:", error);
+            playerFeed.innerHTML = `
+                <div class="text-center text-gray-400 p-8">
+                    <h3 class="font-brand text-2xl text-pink-400 mb-2">AI Chef is on a Break!</h3>
+                    <p>We couldn't generate your personalized Buffet this time. Please try again later.</p>
+                </div>
+            `;
+        }
     };
 
+    /** Opens the Mud Hole view (placeholder). */
     const openMudHoleView = () => {
-        currentAppView = 'mudhole';
-        currentPlayerPlatform = null;
-        hoggWildPlaylist = [];
-        updateHeader('mudhole', 'The Mud Hole');
-    
-        desktopDashboard.classList.add('hidden');
-        mobileDashboard.classList.add('hidden');
+        state.currentPlayerPlatform = null;
+        transitionToPlayerView('mudhole', `The Mud Hole - <span class="font-cursive">Top Waller Scores</span>`);
         playerView.classList.remove('is-live-mode');
-        playerView.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        buffetAddFeedBtn.classList.add('hidden');
     
-        platformTroughTitle.innerHTML = `The Mud Hole - <span class="font-cursive">Top Waller Scores</span>`;
         playerTitle.textContent = "See who's the best Truffle Hunter!";
         playerAuthor.textContent = "Spot trends early to climb the ranks.";
-        playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
-        embedPlayer.innerHTML = '';
-        if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+        mobilePlayerTitle.textContent = "See who's the best Truffle Hunter!";
+        mobilePlayerAuthor.textContent = "Spot trends early to climb the ranks.";
         
         playerFeed.innerHTML = `
             <div class="text-center text-gray-400 p-8">
                 <h3 class="font-brand text-2xl text-pink-400 mb-2">Coming Soon!</h3>
-                <p>Watch videos before they go viral to earn WALLER points and become the top Hogg in the Mud Hole. Leaderboards are on the way!</p>
+                <p>Watch videos before they go viral to earn WALLER points and become the top Truffle Hunter in the Mud Hole. Leaderboards are on the way!</p>
             </div>
         `;
-        currentlyPlayingVideoId = null;
-        updatePlayerHighlighting();
     };
 
-    const closePlayerView = () => {
-        currentAppView = 'feed';
-        currentPlayerPlatform = null;
-        hoggWildPlaylist = [];
-        queuedYouTubeVideo = null;
-        updateHeader('feed', 'Prime Cuts');
+    /** Opens the watch history (Left-Overs) view. */
+    const openWatchAgainView = () => {
+        if (state.watchHistory.length === 0) {
+            showNotification("You haven't watched any videos yet!");
+            return;
+        }
+        state.currentPlayerPlatform = null;
+        transitionToPlayerView('history', `Your <span class="font-cursive">Left-Overs</span>`);
         playerView.classList.remove('is-live-mode');
+        buffetAddFeedBtn.classList.add('hidden');
+        
+        updatePlayPauseIcon();
+        playerTitle.textContent = 'Your Left-Overs';
+        playerAuthor.textContent = 'Re-watch your favorite slop';
+        mobilePlayerTitle.textContent = 'Your Left-Overs';
+        mobilePlayerAuthor.textContent = 'Re-watch your favorite slop';
+        
+        updatePlayerFeedDisplay();
+    };
+
+    /** Closes any player view and returns to the main feed dashboard. */
+    const closePlayerView = () => {
+        state.currentAppView = 'feed';
+        state.currentPlayerPlatform = null;
+        state.hoggWildPlaylist = [];
+        state.buffetPlaylist = [];
+        state.queuedYouTubeVideo = null;
+        
+        updateNavStates('feed');
         playerView.classList.add('hidden');
+        playerView.classList.remove('is-live-mode');
         desktopDashboard.classList.remove('hidden');
         mobileDashboard.classList.remove('hidden');
         document.body.style.overflow = '';
-        if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-            ytPlayer.stopVideo();
+        
+        if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') {
+            state.ytPlayer.stopVideo();
         }
-        embedPlayer.innerHTML = ''; // Clear embed player
-        playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row'; // Reset classes
-        currentlyPlayingVideoId = null;
-        if (masonryPlayer) {
-            masonryPlayer.destroy();
-            masonryPlayer = null;
+        embedPlayer.innerHTML = '';
+        playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
+        state.currentlyPlayingVideoId = null;
+        if (state.masonryPlayer) {
+            state.masonryPlayer.destroy();
+            state.masonryPlayer = null;
         }
+        mobilePlayerTitle.textContent = 'Select a video to play';
+        mobilePlayerAuthor.textContent = 'from the trough';
     };
 
+    /** Starts the HOGG WILD continuous playback mode. */
+    const startHoggWildStream = () => {
+        // HOGG WILD only includes short VOD content, not live streams.
+        const playableVideos = [...(state.allVideos['youtube'] || []), ...(state.allVideos['tiktok'] || [])];
+        if(playableVideos.length === 0) {
+            showNotification("No playable videos loaded for HOGG WILD. Feeds might still be populating.");
+            return;
+        }
+        // Shuffle the playlist
+        state.hoggWildPlaylist = playableVideos
+            .map(value => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value);
+
+        state.currentPlayerPlatform = null;
+        transitionToPlayerView('hoggwild', `HOGG WILD - <span class="font-cursive">Slop Trough</span>`);
+        playerView.classList.remove('is-live-mode');
+        buffetAddFeedBtn.classList.add('hidden');
+
+        updatePlayerFeedDisplay();
+        state.currentHoggWildIndex = 0;
+        playVideo(state.hoggWildPlaylist[state.currentHoggWildIndex]);
+    };
+
+    // =================================================================================
+    // --- VIDEO PLAYER LOGIC ---
+    // =================================================================================
+
+    /**
+     * Plays a selected video, handling UI updates and loading the correct player.
+     * @param videoData - The data object for the video to play.
+     */
     const playVideo = (videoData: any) => {
         if (!videoData) return;
-        currentlyPlayingVideoId = videoData.id;
+        state.currentlyPlayingVideoId = videoData.id;
 
+        // Update watch history (if not a live video)
         if (!videoData.isLive) {
-            watchHistory = watchHistory.filter(v => v.id !== videoData.id);
-            watchHistory.unshift(videoData);
-            if (watchHistory.length > 100) watchHistory.pop();
-            localStorage.setItem('videoHoggHistory', JSON.stringify(watchHistory));
+            state.watchHistory = state.watchHistory.filter(v => v.id !== videoData.id);
+            state.watchHistory.unshift(videoData);
+            if (state.watchHistory.length > 100) state.watchHistory.pop();
+            localStorage.setItem('oinkHistory', JSON.stringify(state.watchHistory));
         }
         
+        // Update titles and author text
         const titleText = videoData.platform === 'x' ? videoData.text : videoData.title;
-
-        if (videoData.isLive) playerTitle.textContent = `LIVE: ${titleText}`;
-        else if (hoggWildPlaylist.length > 0 && hoggWildPlaylist.some(v => v.id === videoData.id)) playerTitle.textContent = `SLOP: ${titleText}`;
-        else if (currentPlayerPlatform) playerTitle.textContent = `Prime Cuts: ${titleText}`;
-        else playerTitle.textContent = titleText;
+        const authorText = `by ${videoData.author}`;
+        let displayTitle = titleText;
+        if (videoData.isLive) displayTitle = `LIVE: ${titleText}`;
+        else if (state.buffetPlaylist.length > 0 && state.buffetPlaylist.some(v => v.id === videoData.id)) displayTitle = `The Buffet: ${titleText}`;
+        else if (state.hoggWildPlaylist.length > 0 && state.hoggWildPlaylist.some(v => v.id === videoData.id)) displayTitle = `SLOP: ${titleText}`;
+        else if (state.currentPlayerPlatform) displayTitle = `Prime Cuts: ${titleText}`;
         
-        playerAuthor.textContent = `by ${videoData.author}`;
+        playerTitle.textContent = displayTitle;
+        playerAuthor.textContent = authorText;
+        mobilePlayerTitle.textContent = titleText;
+        mobilePlayerAuthor.textContent = authorText;
 
-        if (videoData.platform === 'youtube') {
-            playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row youtube-active';
-            embedPlayer.innerHTML = '';
-            if (isYtPlayerReady && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-                ytPlayer.loadVideoById(videoData.id);
-            } else {
-                 queuedYouTubeVideo = videoData;
-            }
-        } else if (videoData.platform === 'tiktok') {
-            playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row embed-active';
-            if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-            embedPlayer.innerHTML = videoData.embedHtml;
-        } else if (videoData.platform === 'twitch') {
-            playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row embed-active';
-            if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-            // The 'parent' parameter is required by Twitch and must match the domain where the script is hosted.
-            const twitchEmbedUrl = `https://player.twitch.tv/?channel=${videoData.user_name}&parent=${window.location.hostname}&autoplay=true&muted=false`;
-            embedPlayer.innerHTML = `<iframe src="${twitchEmbedUrl}" height="100%" width="100%" allowfullscreen></iframe>`;
-        } else {
-            playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
-            if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-            embedPlayer.innerHTML = '';
-            showNotification("This content type is not yet supported in the player.");
+        // Load video into the appropriate player
+        if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') state.ytPlayer.stopVideo();
+        switch(videoData.platform) {
+            case 'youtube':
+                playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row youtube-active';
+                embedPlayer.innerHTML = '';
+                const videoId = typeof videoData.id === 'string' ? videoData.id.replace('youtube-', '') : videoData.id;
+                if (state.isYtPlayerReady && state.ytPlayer && typeof state.ytPlayer.loadVideoById === 'function') {
+                    state.ytPlayer.loadVideoById(videoId);
+                } else {
+                     state.queuedYouTubeVideo = videoData;
+                }
+                break;
+            case 'tiktok':
+            case 'twitch':
+                playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row embed-active';
+                const embedHtml = videoData.platform === 'twitch' 
+                    ? `<iframe src="https://player.twitch.tv/?channel=${videoData.user_name}&parent=www.oink-app.com&autoplay=true&muted=false" height="100%" width="100%" allowfullscreen></iframe>`
+                    : videoData.embedHtml;
+                embedPlayer.innerHTML = embedHtml;
+                break;
+            default:
+                playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
+                embedPlayer.innerHTML = `<div class="w-full h-full bg-black flex items-center justify-center text-white p-4 text-center"><p>This content type is not yet supported in the player.<br/>Playing a placeholder.</p></div>`;
+                showNotification("This content type is not yet supported in the player.");
+                break;
         }
         
         progressBar.value = 0;
         updatePlayerHighlighting();
     };
 
-    const startHoggWildStream = () => {
-        // Hogg wild only includes short VOD content, not live streams.
-        const playableVideos = [...(allVideos['youtube'] || []), ...(allVideos['tiktok'] || [])];
-        if(playableVideos.length === 0) {
-            showNotification("No playable videos loaded for Hogg Wild. Feeds might still be populating.");
-            return;
-        }
-        hoggWildPlaylist = playableVideos
-            .map(value => ({ value, sort: Math.random() }))
-            .sort((a, b) => a.sort - b.sort)
-            .map(({ value }) => value);
-
-        currentAppView = 'hoggwild';
-        currentPlayerPlatform = null;
-        updateHeader('hoggwild', 'Hogg Wild');
-        desktopDashboard.classList.add('hidden');
-        mobileDashboard.classList.add('hidden');
-        playerView.classList.remove('hidden');
-        playerView.classList.remove('is-live-mode');
-        document.body.style.overflow = 'hidden';
-        platformTroughTitle.innerHTML = 'Hogg Wild - <span class="font-cursive">Slop Trough</span>';
-
-        updatePlayerFeedDisplay();
-        currentHoggWildIndex = 0;
-        playVideo(hoggWildPlaylist[currentHoggWildIndex]);
-    };
-
-    const openWatchAgainView = () => {
-        if (watchHistory.length === 0) {
-            showNotification("You haven't watched any videos yet!");
-            return;
-        }
-
-        currentAppView = 'history';
-        currentPlayerPlatform = null;
-        hoggWildPlaylist = [];
-        updateHeader('history', 'Left-Overs');
-        
-        desktopDashboard.classList.add('hidden');
-        mobileDashboard.classList.add('hidden');
-        playerView.classList.remove('hidden');
-        playerView.classList.remove('is-live-mode');
-        document.body.style.overflow = 'hidden';
-        platformTroughTitle.innerHTML = 'Your <span class="font-cursive">Left-Overs</span>';
-        
-        currentlyPlayingVideoId = null;
-        playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
-        embedPlayer.innerHTML = '';
-        if(ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-        updatePlayPauseIcon();
-        
-        updatePlayerFeedDisplay();
-    };
-    
-    const handleShare = async () => {
-        if (!currentlyPlayingVideoId) {
-            showNotification('No video is currently playing to share.');
-            return;
-        }
-        const videoData = Object.values(allVideos).flat().find(v => v.id === currentlyPlayingVideoId) 
-            || watchHistory.find(v => v.id === currentlyPlayingVideoId)
-            || liveVideos.find(v => v.id === currentlyPlayingVideoId);
-        
-        if (!videoData) return;
-
-        // Calculate points based on virality. Lower score = more points.
-        const virality = videoData.viralityScore || 900; // Default to high virality if undefined
-        const points = Math.max(10, Math.round(100 - (virality / 10))); // Min 10 points
-        
-        let urlToShare = window.location.href;
-        if (videoData.platform === 'youtube') urlToShare = `https://www.youtube.com/watch?v=${videoData.id}`;
-        if (videoData.platform === 'tiktok') urlToShare = `https://www.tiktok.com/@${videoData.author}/video/${videoData.id}`;
-        if (videoData.platform === 'twitch') urlToShare = `https://www.twitch.tv/${videoData.user_name}`;
-
-
-        const shareData = {
-            title: `Check out this video from PRIME CUTS: ${videoData.title}`,
-            text: `${videoData.title} by ${videoData.author}`,
-            url: urlToShare
-        };
-
-        try {
-            if (navigator.share) {
-                await navigator.share(shareData);
-                showNotification(`SLOP SHARED! +${points} WALLER Points!`);
+    /** Plays the next video in the current trough/playlist. */
+    const playNextVideo = () => {
+        if (state.hoggWildPlaylist.length > 0) {
+            state.currentHoggWildIndex++;
+            if (state.currentHoggWildIndex < state.hoggWildPlaylist.length) {
+                playVideo(state.hoggWildPlaylist[state.currentHoggWildIndex]);
             } else {
-                throw new Error('Share API not supported');
+                closePlayerView();
             }
-        } catch (err: any) {
-            if (err.name === 'AbortError') {
-                // User cancelled the share dialog, do nothing.
-                return;
+        } else if (state.buffetPlaylist.length > 0) {
+            state.currentBuffetIndex++;
+            if (state.currentBuffetIndex < state.buffetPlaylist.length) {
+                playVideo(state.buffetPlaylist[state.currentBuffetIndex]);
+            } else {
+                showNotification("That's all for this Buffet!");
+                closePlayerView();
             }
-            try {
-                await navigator.clipboard.writeText(urlToShare);
-                showNotification(`SLOP SHARED! +${points} WALLER Points! Link copied.`);
-            } catch (clipErr) {
-                showNotification('Could not copy link to clipboard.');
+        } else if (state.currentPlayerPlatform) {
+            const platformVideos = state.allVideos[state.currentPlayerPlatform] || [];
+            const sortedVideos = [...platformVideos];
+            if (state.currentPlayerPlatform !== 'twitch' && state.currentPlayerPlatform !== 'x') {
+                sortedVideos.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
             }
-        }
-    };
-
-    // --- VIDEO PLAYER CONTROLS ---
-    const playNextInPlatformTrough = () => {
-        if (!currentPlayerPlatform) return;
-    
-        const platformVideos = allVideos[currentPlayerPlatform] || [];
-        const sortedVideos = [...platformVideos];
-        if (currentPlayerPlatform !== 'twitch' && currentPlayerPlatform !== 'x') {
-            sortedVideos.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
-        }
-    
-        const currentIndex = sortedVideos.findIndex(v => v.id === currentlyPlayingVideoId);
-    
-        if (currentIndex !== -1 && currentIndex < sortedVideos.length - 1) {
-            playVideo(sortedVideos[currentIndex + 1]);
-        } else {
-            closePlayerView();
-        }
-    };
-
-    const playNextInHoggWild = () => {
-        if (hoggWildPlaylist.length > 0) {
-            currentHoggWildIndex++;
-            if (currentHoggWildIndex < hoggWildPlaylist.length) {
-                playVideo(hoggWildPlaylist[currentHoggWildIndex]);
+            const currentIndex = sortedVideos.findIndex(v => v.id === state.currentlyPlayingVideoId);
+            if (currentIndex !== -1 && currentIndex < sortedVideos.length - 1) {
+                playVideo(sortedVideos[currentIndex + 1]);
             } else {
                 closePlayerView();
             }
         }
     };
     
-    const onVideoEnded = () => {
-        if (currentAppView === 'history' || currentAppView === 'live') {
-            updatePlayPauseIcon();
-            return;
+    /** Adds or removes the 'is-playing' class from cards. */
+    const updatePlayerHighlighting = () => {
+        document.querySelectorAll('.is-playing').forEach(el => el.classList.remove('is-playing'));
+        if (state.currentlyPlayingVideoId) {
+            document.querySelectorAll(`[data-video-id="${state.currentlyPlayingVideoId}"]`).forEach(el => el.classList.add('is-playing'));
         }
-        if (hoggWildPlaylist.length > 0) {
-            playNextInHoggWild();
-        } else if (currentPlayerPlatform) {
-            playNextInPlatformTrough();
-        }
-    };
-
-    const formatTime = (time: number) => {
-        if (isNaN(time)) return '0:00';
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    };
-
-    const updatePlayPauseIcon = () => {
-        if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') return;
-        const playerState = ytPlayer.getPlayerState();
-        if (playerState !== YT.PlayerState.PLAYING) {
-            playIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
-        } else {
-            playIcon.classList.add('hidden');
-            pauseIcon.classList.remove('hidden');
-        }
-    };
-
-    const updateVideoProgress = () => {
-        if (!ytPlayer || typeof ytPlayer.getCurrentTime !== 'function') return;
-        const currentTime = ytPlayer.getCurrentTime();
-        const duration = ytPlayer.getDuration();
-        const progress = (currentTime / duration) * 100;
-        progressBar.value = progress || 0;
-        currentTimeEl.textContent = formatTime(currentTime);
-        durationEl.textContent = formatTime(duration);
-    };
-
-    const setVideoTime = (e: MouseEvent) => {
-        if (!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
-        const duration = ytPlayer.getDuration();
-        const width = progressBar.clientWidth;
-        const clickX = e.offsetX;
-        ytPlayer.seekTo((clickX / width) * duration);
-    };
-
-    const toggleMute = () => {
-        if (!ytPlayer || typeof ytPlayer.isMuted !== 'function') return;
-        ytPlayer.isMuted() ? ytPlayer.unMute() : ytPlayer.mute();
-    };
-
-    const updateVolumeUI = () => {
-        if (!ytPlayer || typeof ytPlayer.isMuted !== 'function') return;
-        if (ytPlayer.isMuted() || ytPlayer.getVolume() === 0) {
-            volumeHighIcon.classList.add('hidden');
-            volumeMutedIcon.classList.remove('hidden');
-            volumeSlider.value = '0';
-        } else {
-            volumeHighIcon.classList.remove('hidden');
-            volumeMutedIcon.classList.add('hidden');
-            volumeSlider.value = (ytPlayer.getVolume() / 100).toString();
-        }
-    };
-
-    const setVolume = (e: Event) => {
-        if (!ytPlayer || typeof ytPlayer.setVolume !== 'function') return;
-        const target = e.target as HTMLInputElement;
-        const newVolume = parseFloat(target.value);
-        ytPlayer.setVolume(newVolume * 100);
-        if (newVolume === 0) ytPlayer.mute();
-        else ytPlayer.unMute();
-    };
-
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement) {
-            playerContainer.requestFullscreen().catch(err => {
-                showNotification(`Error enabling full-screen: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    };
-
-    const addPlatform = (name: string) => {
-        const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (!id || platforms.some(p => p.id === id)) { return; }
-        const newPlatform = { id, name, query: name };
-        platforms.push(newPlatform);
-        allVideos[id] = [];
-        pageTrackers[id] = 1;
-        renderDashboardColumn(newPlatform);
-        createMobileToggleBoard(); // Recreate to include the new platform
-        loadMoreVideos(newPlatform);
-        closeModal();
     };
     
-    const openModal = () => {
-        previousActiveElement = document.activeElement as HTMLElement;
-        addFeedModal.classList.remove('hidden');
-        customFeedNameInput.focus();
-    };
-    const closeModal = () => {
-        addFeedModal.classList.add('hidden');
-        previousActiveElement?.focus();
-    };
+    // --- YOUTUBE PLAYER CONTROLS & EVENTS ---
 
-    const showNotification = (message: string) => {
-        clearTimeout(notificationTimeout);
-        notification.textContent = message;
-        notification.classList.remove('opacity-0');
-        notificationTimeout = window.setTimeout(() => {
-            notification.classList.add('opacity-0');
-        }, 4000);
-    };
-
-    // --- YOUTUBE PLAYER EVENT HANDLERS ---
-    const onPlayerReady = (event: any) => {
-        isYtPlayerReady = true;
+    /** Callback for when the YouTube player is ready. */
+    const onPlayerReady = () => {
+        state.isYtPlayerReady = true;
         updateVolumeUI();
-        if (queuedYouTubeVideo) {
-            playVideo(queuedYouTubeVideo);
-            queuedYouTubeVideo = null;
+        if (state.queuedYouTubeVideo) {
+            playVideo(state.queuedYouTubeVideo);
+            state.queuedYouTubeVideo = null;
         }
     };
 
+    /** Callback for YouTube player state changes (playing, paused, ended). */
     const onPlayerStateChange = (event: any) => {
         updatePlayPauseIcon();
         if (event.data === YT.PlayerState.PLAYING) {
             updateVolumeUI();
-            playerUpdateInterval = window.setInterval(updateVideoProgress, 250);
+            state.playerUpdateInterval = window.setInterval(updateVideoProgress, 250);
         } else {
-            clearInterval(playerUpdateInterval);
+            clearInterval(state.playerUpdateInterval);
         }
         if (event.data === YT.PlayerState.ENDED) {
-            onVideoEnded();
+            // Don't auto-play next in history or live views.
+            if (state.currentAppView !== 'history' && state.currentAppView !== 'live') {
+                playNextVideo();
+            }
         }
     };
 
+    const updatePlayPauseIcon = () => {
+        if (!state.ytPlayer || typeof state.ytPlayer.getPlayerState !== 'function') return;
+        const isPlaying = state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
+        playIcon.classList.toggle('hidden', isPlaying);
+        pauseIcon.classList.toggle('hidden', !isPlaying);
+    };
+
+    const updateVideoProgress = () => {
+        if (!state.ytPlayer || typeof state.ytPlayer.getCurrentTime !== 'function') return;
+        const currentTime = state.ytPlayer.getCurrentTime();
+        const duration = state.ytPlayer.getDuration();
+        progressBar.value = (currentTime / duration) * 100 || 0;
+        currentTimeEl.textContent = formatTime(currentTime);
+        durationEl.textContent = formatTime(duration);
+    };
+
+    const updateVolumeUI = () => {
+        if (!state.ytPlayer || typeof state.ytPlayer.isMuted !== 'function') return;
+        const isMuted = state.ytPlayer.isMuted() || state.ytPlayer.getVolume() === 0;
+        volumeHighIcon.classList.toggle('hidden', isMuted);
+        volumeMutedIcon.classList.toggle('hidden', !isMuted);
+        volumeSlider.value = isMuted ? '0' : (state.ytPlayer.getVolume() / 100).toString();
+    };
+
+    // =================================================================================
+    // --- MODALS & NOTIFICATIONS ---
+    // =================================================================================
+    
+    /** Displays a short-lived notification message. */
+    const showNotification = (message: string) => {
+        clearTimeout(state.notificationTimeout);
+        notification.textContent = message;
+        notification.classList.remove('opacity-0');
+        state.notificationTimeout = window.setTimeout(() => {
+            notification.classList.add('opacity-0');
+        }, 4000);
+    };
+
+    const openModal = (modal: HTMLElement) => {
+        state.previousActiveElement = document.activeElement as HTMLElement;
+        modal.classList.remove('hidden');
+        const firstFocusable = modal.querySelector('input, button') as HTMLElement;
+        firstFocusable?.focus();
+    };
+
+    const closeModal = (modal: HTMLElement) => {
+        modal.classList.add('hidden');
+        state.previousActiveElement?.focus();
+    };
+
+    // =================================================================================
+    // --- EVENT HANDLERS ---
+    // =================================================================================
+
+    /** Handles clicks on any video card to play the video. */
+    const handleCardClick = (e: MouseEvent) => {
+        const card = (e.target as HTMLElement).closest('[data-video-id]');
+        if (!card) return;
+
+        const videoId = (card as HTMLElement).dataset.videoId!;
+        const platformId = (card as HTMLElement).dataset.platform!;
+        let videoData = state.liveVideos.find(v => v.id === videoId)
+            || state.allVideos[platformId]?.find(v => v.id === videoId)
+            || state.watchHistory.find(v => v.id === videoId)
+            || state.buffetPlaylist.find(v => v.id === videoId);
+        
+        if (!videoData) return;
+        
+        // Open player if not already in a player view
+        if (!playerView.offsetParent) {
+            openPlayerView(platformId);
+        }
+
+        if (state.currentAppView === 'buffet' && state.buffetPlaylist.length > 0) {
+            const newIndex = state.buffetPlaylist.findIndex(v => v.id === videoData.id);
+            if (newIndex > -1) state.currentBuffetIndex = newIndex;
+        }
+        
+        playVideo(videoData);
+    };
+
+    /** Handles the share/Waller button action. */
+    const handleShare = async () => {
+        if (!state.currentlyPlayingVideoId) {
+            showNotification('No video is currently playing to share.');
+            return;
+        }
+        const videoData = Object.values(state.allVideos).flat().find(v => v.id === state.currentlyPlayingVideoId) 
+            || state.watchHistory.find(v => v.id === state.currentlyPlayingVideoId)
+            || state.liveVideos.find(v => v.id === state.currentlyPlayingVideoId)
+            || state.buffetPlaylist.find(v => v.id === state.currentlyPlayingVideoId);
+        
+        if (!videoData) return;
+
+        const virality = videoData.viralityScore || 900;
+        const points = Math.max(10, Math.round(100 - (virality / 10)));
+        let urlToShare = window.location.href; // Fallback URL
+        if (videoData.platform === 'youtube') urlToShare = `https://www.youtube.com/watch?v=${videoData.id}`;
+        if (videoData.platform === 'tiktok') urlToShare = `https://www.tiktok.com/@${videoData.author}/video/${videoData.id}`;
+        if (videoData.platform === 'twitch') urlToShare = `https://www.twitch.tv/${videoData.user_name}`;
+
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: `Check out this video: ${videoData.title}`, url: urlToShare });
+                showNotification(`SLOP SHARED! +${points} WALLER Points!`);
+            } else {
+                throw new Error('Share API not supported');
+            }
+        } catch (err: any) {
+            if (err.name === 'AbortError') return; // User cancelled share
+            try { // Fallback to clipboard
+                await navigator.clipboard.writeText(urlToShare);
+                showNotification(`SLOP SHARED! +${points} WALLER Points! Link copied.`);
+            } catch {
+                showNotification('Could not copy link to clipboard.');
+            }
+        }
+    };
+
+    /** Adds a new custom platform feed. */
+    const addPlatform = (name: string) => {
+        const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (!id || state.platforms.some(p => p.id === id)) { 
+            showNotification(`Feed "${name}" already exists or is invalid.`);
+            return; 
+        }
+        const newPlatform = { id, name, query: name };
+        state.platforms.push(newPlatform);
+        state.allVideos[id] = [];
+        state.pageTrackers[id] = 1;
+
+        renderDashboardColumn(newPlatform);
+        createMobileToggleBoard(); // Re-render mobile toggles
+        loadMoreVideos(newPlatform);
+        closeModal(addFeedModal);
+    };
+
+    /** Binds all the application's event listeners. */
+    const bindEventListeners = () => {
+        // Main Navigation
+        primeCutsBtn.addEventListener('click', closePlayerView);
+        hoggWildBtn.addEventListener('click', startHoggWildStream);
+        livePenBtn.addEventListener('click', openLiveView);
+        buffetBtn.addEventListener('click', openBuffetView);
+        mudHoleBtn.addEventListener('click', openMudHoleView);
+        leftOversHeaderBtn.addEventListener('click', openWatchAgainView);
+        
+        // Player Actions
+        backToFeedBtn.addEventListener('click', closePlayerView);
+        shareBtn.addEventListener('click', handleShare);
+        mobileShareBtn.addEventListener('click', handleShare);
+        watchAgainBtn.addEventListener('click', openWatchAgainView);
+        buffetAddFeedBtn.addEventListener('click', () => openModal(addFeedModal));
+
+        // Player Controls
+        playPauseBtn.addEventListener('click', () => {
+            if (!state.ytPlayer || typeof state.ytPlayer.getPlayerState !== 'function') return;
+            state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING ? state.ytPlayer.pauseVideo() : state.ytPlayer.playVideo();
+        });
+        progressBar.addEventListener('click', (e) => {
+            if (!state.ytPlayer || typeof state.ytPlayer.getDuration !== 'function') return;
+            const duration = state.ytPlayer.getDuration();
+            state.ytPlayer.seekTo((e.offsetX / progressBar.clientWidth) * duration);
+        });
+        volumeBtn.addEventListener('click', () => {
+            if (!state.ytPlayer || typeof state.ytPlayer.isMuted !== 'function') return;
+            state.ytPlayer.isMuted() ? state.ytPlayer.unMute() : state.ytPlayer.mute();
+        });
+        volumeSlider.addEventListener('input', (e) => {
+            if (!state.ytPlayer || typeof state.ytPlayer.setVolume !== 'function') return;
+            const newVolume = parseFloat((e.target as HTMLInputElement).value);
+            state.ytPlayer.setVolume(newVolume * 100);
+            newVolume === 0 ? state.ytPlayer.mute() : state.ytPlayer.unMute();
+        });
+        fullscreenBtn.addEventListener('click', () => {
+            document.fullscreenElement ? document.exitFullscreen() : playerContainer.requestFullscreen();
+        });
+
+        // Modals
+        addFeedBtn.addEventListener('click', () => openModal(addFeedModal));
+        closeModalBtn.addEventListener('click', () => closeModal(addFeedModal));
+        addFeedModal.addEventListener('click', (e) => { if (e.target === addFeedModal) closeModal(addFeedModal); });
+        customFeedForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newName = customFeedNameInput.value.trim();
+            if (newName) { addPlatform(newName); customFeedNameInput.value = ''; }
+        });
+        document.querySelectorAll('.add-suggestion-btn').forEach(button => {
+            button.addEventListener('click', (e) => addPlatform((e.target as HTMLElement).dataset.name!));
+        });
+        
+        // Mobile "More" Menu
+        openMoreMenuBtn.addEventListener('click', () => openModal(moreMenuModal));
+        closeMoreMenuBtn.addEventListener('click', () => closeModal(moreMenuModal));
+        leftOversMenuBtn.addEventListener('click', () => { closeModal(moreMenuModal); openWatchAgainView(); });
+        mudHoleMenuBtn.addEventListener('click', () => { closeModal(moreMenuModal); openMudHoleView(); });
+        feedMeMenuBtn.addEventListener('click', () => { closeModal(moreMenuModal); openModal(addFeedModal); });
+
+        // Global Listeners
+        document.body.addEventListener('click', handleCardClick);
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !addFeedModal.classList.contains('hidden')) closeModal(addFeedModal);
+            if (e.key === 'Escape' && !moreMenuModal.classList.contains('hidden')) closeModal(moreMenuModal);
+        });
+    };
+
+    // =================================================================================
+    // --- INITIALIZATION ---
+    // =================================================================================
+
+    /** Creates the platform toggle buttons for the mobile view. */
     const createMobileToggleBoard = () => {
-        mobileDashboard.innerHTML = ''; // Clear previous board
+        mobileDashboard.innerHTML = '';
         const toggleContainer = document.createElement('div');
         toggleContainer.id = 'mobile-platform-toggle';
         toggleContainer.className = 'sticky top-0 bg-gray-900/80 backdrop-blur-sm p-2 flex justify-center gap-4 border-b border-gray-700 overflow-x-auto no-scrollbar';
 
-        const allPlatforms = [{id: 'all', name: 'All'}, ...platforms];
-        allPlatforms.forEach(platform => {
+        [{id: 'all', name: 'All'}, ...state.platforms].forEach(platform => {
             const button = document.createElement('button');
             button.dataset.platform = platform.id;
             button.textContent = platform.name;
-            button.className = `mobile-toggle-btn font-brand text-lg text-gray-300 px-2 py-1 whitespace-nowrap ${platform.id === mobileActivePlatform ? 'active' : ''}`;
+            button.className = `mobile-toggle-btn font-brand text-lg text-gray-300 px-2 py-1 whitespace-nowrap ${platform.id === state.mobileActivePlatform ? 'active' : ''}`;
             button.addEventListener('click', () => {
-                mobileActivePlatform = platform.id;
+                state.mobileActivePlatform = platform.id;
                 document.querySelectorAll('.mobile-toggle-btn').forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 renderMobileFeed();
@@ -1137,134 +1356,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         mobileDashboard.appendChild(feedContentContainer);
     };
 
-    // --- EVENT LISTENERS ---
-    document.body.addEventListener('click', (e) => {
-        const card = (e.target as HTMLElement).closest('[data-video-id]');
-        if (card) {
-            const videoId = (card as HTMLElement).dataset.videoId!;
-            const platformId = (card as HTMLElement).dataset.platform!;
-            let videoData;
-
-            if (platformId === 'live') {
-                videoData = liveVideos.find(v => v.id === videoId);
-            } else {
-                videoData = allVideos[platformId]?.find(v => v.id === videoId) || watchHistory.find(v => v.id === videoId);
-            }
-            
-            if (!videoData) return;
-
-            if (currentAppView !== 'player' && currentAppView !== 'history' && currentAppView !== 'live') {
-                openPlayerView(platformId);
-            }
-            playVideo(videoData);
-        }
-    });
-    
-    playerView.addEventListener('scroll', () => {
-        if (currentAppView === 'player' && currentPlayerPlatform && playerView.scrollTop + playerView.clientHeight >= playerView.scrollHeight - 500) {
-            const platform = platforms.find(p => p.id === currentPlayerPlatform);
-            if(platform && platform.id !== 'youtube' && platform.id !== 'tiktok' && platform.id !== 'twitch') loadMoreVideos(platform);
-        }
-    });
-    
-    primeCutsBtn.addEventListener('click', closePlayerView);
-    hoggWildBtn.addEventListener('click', startHoggWildStream);
-    livePenBtn.addEventListener('click', openLiveView);
-    buffettBtn.addEventListener('click', openBuffettView);
-    mudHoleBtn.addEventListener('click', openMudHoleView);
-    leftOversHeaderBtn.addEventListener('click', openWatchAgainView);
-    addFeedBtn.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
-    addFeedModal.addEventListener('click', (e) => { if (e.target === addFeedModal) closeModal(); });
-    customFeedForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newName = customFeedNameInput.value.trim();
-        if (newName) { addPlatform(newName); customFeedNameInput.value = ''; }
-    });
-    document.querySelectorAll('.add-suggestion-btn').forEach(button => {
-        button.addEventListener('click', (e) => addPlatform((e.target as HTMLElement).dataset.name!));
-    });
-
-    backToFeedBtn.addEventListener('click', closePlayerView);
-    shareBtn.addEventListener('click', handleShare);
-    watchAgainBtn.addEventListener('click', openWatchAgainView);
-    
-    playPauseBtn.addEventListener('click', () => {
-        if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') return;
-        ytPlayer.getPlayerState() === YT.PlayerState.PLAYING ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
-    });
-
-    progressBar.addEventListener('click', setVideoTime);
-    volumeBtn.addEventListener('click', toggleMute);
-    volumeSlider.addEventListener('input', setVolume);
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !addFeedModal.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
-
-    // --- INITIALIZATION ---
+    /** Sets up the application on initial load. */
     const initializeApp = async () => {
-        const savedHistory = localStorage.getItem('videoHoggHistory');
-        if (savedHistory) watchHistory = JSON.parse(savedHistory);
+        // Load assets
+        try {
+            const logoB64 = await (await fetch('./src/assets/logo.b64')).text();
+            const logoSrc = `data:image/png;base64,${logoB64}`;
+            (document.getElementById('favicon') as HTMLLinkElement).href = logoSrc;
+            (document.getElementById('loading-logo') as HTMLImageElement).src = logoSrc;
+        } catch (e) { console.error('Failed to load branding assets.', e); }
 
-        currentAppView = 'feed';
-        updateHeader('feed', 'Prime Cuts');
-        
-        // --- Mobile Setup ---
+        const savedHistory = localStorage.getItem('oinkHistory');
+        if (savedHistory) state.watchHistory = JSON.parse(savedHistory);
+
+        updateNavStates(state.currentAppView);
         createMobileToggleBoard();
 
-        // --- Desktop Setup ---
-        desktopDashboard.innerHTML = '';
-        platforms.forEach(platform => {
-            allVideos[platform.id] = [];
-            pageTrackers[platform.id] = 1;
-            renderDashboardColumn(platform);
-
-            const columnContainer = document.getElementById(`platform-column-${platform.id}`) as HTMLElement;
-            columnContainer.addEventListener('scroll', () => {
-                if (columnContainer.scrollTop + columnContainer.clientHeight >= columnContainer.scrollHeight - 500) {
-                    if (platform.id !== 'youtube' && platform.id !== 'tiktok' && platform.id !== 'twitch') loadMoreVideos(platform);
+        // Bind mobile bottom nav actions
+        document.querySelectorAll('#mobile-bottom-nav .bottom-nav-btn, #mobile-bottom-nav-player .bottom-nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = (btn as HTMLElement).dataset.view;
+                if (!view) return;
+                if (view !== 'more' && !moreMenuModal.classList.contains('hidden')) closeModal(moreMenuModal);
+                
+                switch(view) {
+                    case 'feed': closePlayerView(); break;
+                    case 'live': openLiveView(); break;
+                    case 'hoggwild': startHoggWildStream(); break;
+                    case 'buffet': openBuffetView(); break;
+                    case 'more': openModal(moreMenuModal); break;
                 }
             });
         });
         
-        // --- Shared Setup ---
-         window.addEventListener('scroll', () => {
-            // Check if we are in mobile view by looking at the dashboard's visibility
-            const isMobileView = mobileDashboard.offsetParent !== null;
-            if (isMobileView && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-                 if (mobileActivePlatform === 'all') {
-                    // Load more for all paginated platforms
-                    platforms.forEach(p => {
-                        if (p.id !== 'tiktok' && p.id !== 'twitch') loadMoreVideos(p);
-                    });
-                } else {
-                    const platform = platforms.find(p => p.id === mobileActivePlatform);
-                     if (platform && platform.id !== 'tiktok' && platform.id !== 'twitch') {
-                        loadMoreVideos(platform);
-                    }
-                }
-            }
+        // Set up desktop columns
+        desktopDashboard.innerHTML = '';
+        state.platforms.forEach(platform => {
+            state.allVideos[platform.id] = [];
+            state.pageTrackers[platform.id] = 1;
+            renderDashboardColumn(platform);
         });
         
+        bindEventListeners();
+        
         document.addEventListener('youtube-api-ready', () => {
-            ytPlayer = new YT.Player('youtube-player', {
-                height: '100%',
-                width: '100%',
+            state.ytPlayer = new YT.Player('youtube-player', {
+                height: '100%', width: '100%',
                 playerVars: { 'playsinline': 1, 'controls': 0, 'rel': 0, 'showinfo': 0, 'modestbranding': 1 },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
             });
         });
         
         await loadMoreVideos();
-        renderMobileFeed(); // Initial render for mobile
+        renderMobileFeed();
         checkForNewLiveVideos();
-        liveUpdateInterval = window.setInterval(checkForNewLiveVideos, 30000);
+        state.liveUpdateInterval = window.setInterval(checkForNewLiveVideos, 30000);
 
-        const loadingScreen = document.getElementById('loading-screen') as HTMLElement;
+        // Fade out loading screen
+        const loadingScreen = document.getElementById('loading-screen');
         if(loadingScreen) {
             loadingScreen.classList.add('opacity-0');
             setTimeout(() => loadingScreen.remove(), 500);
