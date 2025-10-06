@@ -17,6 +17,8 @@ declare var YT: any;
     document.dispatchEvent(new Event('youtube-api-ready'));
 };
 
+const LOGO_B64_JPG = 'iVBORw0KGgoAAAANSUhEUgAAA+gAAAPoAQMAAABo3AcFAAAABlBMVEX/mZn/sLDxO6dDAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO3aO27kMBQFYI8qLh+BI3A03YATcDRcgSNwNByBI3A0Lh+BI3A0boc2xxs7FsePAeKDXaY4f3wkea83v/s7/fn3N+S/j2s9/gf++v0/OIyG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG0DAahkNpOByG'
+
 document.addEventListener('DOMContentLoaded', async () => {
     
     // =================================================================================
@@ -152,6 +154,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
+    /** Shows a notification message at the top of the screen. */
+    const showNotification = (message: string) => {
+        if (state.notificationTimeout) clearTimeout(state.notificationTimeout);
+        notification.textContent = message;
+        notification.classList.remove('hidden', 'opacity-0', '-translate-y-full');
+        notification.classList.add('opacity-100', 'translate-y-0');
+
+        state.notificationTimeout = window.setTimeout(() => {
+            notification.classList.remove('opacity-100', 'translate-y-0');
+            notification.classList.add('opacity-0', '-translate-y-full');
+            setTimeout(() => notification.classList.add('hidden'), 300);
+        }, 3000);
+    };
+
     // =================================================================================
     // --- API & DATA FUNCTIONS ---
     // =================================================================================
@@ -178,6 +194,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         },
         _streamerNames: ['StreamOink', 'ProGamerX', 'PixelQueen', 'RageQuitRoy', 'SnackStreamz'],
         _gameNames: ['Oinkcraft', 'Call of Duty: Modern Boarfare', 'League of Legends', 'Fortnite', 'Valorant', 'Apex Legends'],
+        _youtubeIds: ['dQw4w9WgXcQ', '3tmd-ClpJxA', 'kJQP7kiw5Fk', '8-m4w_2cWwU', 'nfWlot6h_JM', 'e-ORhEE9VVg', '09m0B8RRiEE', 'kXYiU_JCYtU', 'Y-x0efG1knA'],
+
 
         _generateMockStream: function() {
             this._liveIdCounter++;
@@ -201,13 +219,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const randomNoun = this._nouns[Math.floor(Math.random() * this._nouns.length)];
             const randomAuthor = this._authors[Math.floor(Math.random() * this._authors.length)];
             const title = `${randomAdjective} ${randomNoun} TikTok Dance!`;
+            // Fallback to a real, playable video for the player
+             const mockVideoId = this._youtubeIds[Math.floor(Math.random() * this._youtubeIds.length)];
             return {
                 id: `tiktok-${this._idCounter}`, platform: 'tiktok', title: title, author: randomAuthor,
                 thumbnailUrl: `https://picsum.photos/seed/tiktok${this._idCounter}/360/640`,
                 orientation: 'portrait',
                 viralityScore: Math.floor(Math.random() * 1000),
                 viewCount: Math.floor(Math.random() * 15000000) + 100000,
-                embedHtml: `<div class="w-full h-full bg-black flex items-center justify-center text-white p-4 text-center"><p>Mock TikTok Player for "<span class="font-semibold">${title}</span>"</p></div>`
+                embedHtml: `<div id="youtube-player-mock"></div>`,
+                mockVideoId: mockVideoId
             };
         },
 
@@ -236,18 +257,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         orientation: 'landscape', author_name: randomAuthor
                     });
                 } else { // Handles youtube and custom feeds
-                    const isPortrait = platform.id === 'tiktok';
                     const viewCount = Math.floor(Math.random() * 8000000) + 10000;
                     const viralityScore = Math.floor(Math.random() * 1000);
                     
                     let templates = this._titleTemplates.default;
                     let title = templates[Math.floor(Math.random() * templates.length)];
                     title = title.replace('{noun}', randomNoun).replace('{adjective}', randomAdjective);
+                    const videoId = this._youtubeIds[Math.floor(Math.random() * this._youtubeIds.length)];
 
                     videos.push({
-                        id: `${platform.id}-${this._idCounter}`, platform: platform.id, title: title, author: randomAuthor,
-                        thumbnailUrl: `https://picsum.photos/seed/${this._idCounter}/${isPortrait ? '360/640' : '640/360'}`,
-                        orientation: isPortrait ? 'portrait' : 'landscape', viralityScore, viewCount
+                        id: videoId, platform: platform.id, title: title, author: randomAuthor,
+                        thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                        orientation: 'landscape', viralityScore, viewCount
                     });
                 }
             }
@@ -261,10 +282,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 this._liveIdCounter++;
                 const randomNoun = this._newsNouns[Math.floor(Math.random() * this._newsNouns.length)];
                 let title = this._newsTemplates[Math.floor(Math.random() * this._newsTemplates.length)].replace('{noun}', randomNoun);
-                
+                const videoId = this._youtubeIds[Math.floor(Math.random() * this._youtubeIds.length)];
+
                 this._liveFeed.unshift({
-                    id: `live-${this._liveIdCounter}`, platform: 'live', title, author: 'Global News Network',
-                    thumbnailUrl: `https://picsum.photos/seed/live${this._liveIdCounter}/640/360`, orientation: 'landscape',
+                    id: videoId, // Use a real playable ID
+                    platform: 'live',
+                    title,
+                    author: 'Global News Network',
+                    thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                    orientation: 'landscape',
                     viewCount: Math.floor(Math.random() * 150000) + 5000, isLive: true,
                 });
             }
@@ -275,44 +301,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const TikTokVideoService = {
         fetchTrending: async (): Promise<any[]> => {
             try {
-                const videoUrls = [
-                    'https://www.tiktok.com/@zachking/video/7314220791646391595', 'https://www.tiktok.com/@jamescharles/video/6790333339028901126',
-                    'https://www.tiktok.com/@addisonre/video/6794921679332216070', 'https://www.tiktok.com/@therock/video/7325234932374637867',
-                    'https://www.tiktok.com/@charlidamelio/video/6793399039983946962', 'https://www.tiktok.com/@bellapoarch/video/6862153931888200965',
-                    'https://www.tiktok.com/@justmaiko/video/6824962154563931397', 'https://www.tiktok.com/@scout2015/video/6718335390845095173',
-                    'https://www.tiktok.com/@dancemachine/video/7331942365384609067', 'https://www.tiktok.com/@mrbeast/video/7174099433433648430',
-                    'https://www.tiktok.com/@lorengray/video/6795431969348980000', 'https://www.tiktok.com/@cznburak/video/7321821867147775274',
-                    'https://www.tiktok.com/@willsmith/video/6738337351887326470', 'https://www.tiktok.com/@kyliejenner/video/7325515324888255790'
-                ];
-
-                const oEmbedPromises = videoUrls.map(url =>
-                    fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`)
-                        .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch oEmbed'))
-                );
+                // Using oEmbed is rate-limited and often fails in this environment.
+                // Using a list of real video IDs and populating them as mock TikToks.
+                const realVideoIds = ['7314220791646391595', '6790333339028901126', '6794921679332216070', '7325234932374637867', '6793399039983946962', '6862153931888200965', '6824962154563931397', '6718335390845095173'];
                 
-                const results = await Promise.allSettled(oEmbedPromises);
-                const successfulEmbeds: any[] = [];
-                results.forEach(result => {
-                    if (result.status === 'fulfilled') {
-                        const data = result.value;
-                        const videoIdMatch = data.html.match(/data-video-id="(\d+)"/);
-                        const videoId = videoIdMatch ? videoIdMatch[1] : `tiktok-${Math.random()}`;
-
-                        successfulEmbeds.push({
-                            id: videoId, platform: 'tiktok', title: data.title, author: data.author_name,
-                            thumbnailUrl: data.thumbnail_url, orientation: 'portrait',
-                            viralityScore: Math.floor(Math.random() * 1000), // TikTok doesn't provide this
-                            viewCount: Math.floor(Math.random() * 15000000) + 100000, // Or this
-                            embedHtml: data.html
-                        });
-                    }
+                const mockVideos = realVideoIds.map(id => {
+                    const mock = MockVideoAPIService._generateMockTikTok();
+                    // Override with real data for player compatibility
+                    mock.id = `tiktok-${id}`;
+                    mock.title = "Real TikTok (via Mock Service)";
+                    mock.embedHtml = `<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@placeholder/video/${id}" data-video-id="${id}" style="max-width: 605px;min-width: 325px;" > <section></section> </blockquote>`;
+                    return mock;
                 });
+                return mockVideos;
 
-                if (successfulEmbeds.length === 0) {
-                    // Throw an error to trigger the catch block if API returns nothing.
-                    throw new Error("No videos returned from TikTok oEmbed API.");
-               }
-               return successfulEmbeds;
             } catch (error) {
                 console.warn('Failed to fetch real TikTok videos, falling back to mock data:', error);
                 showNotification('Could not load TikTok feed. Showing mock content.');
@@ -327,13 +329,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const TwitchVideoService = {
         fetchTopStreams: async (): Promise<any[]> => {
-            // Replaced live API call with mock data to avoid dependency on API keys.
-            await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 400)); // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 400));
             try {
-                const mockStreams = [];
-                for (let i = 0; i < 12; i++) {
-                    mockStreams.push(MockVideoAPIService._generateMockStream());
-                }
+                // Real streamer names for embeddable content
+                const realStreamers = ['xqc', 'summit1g', 'shroud', 'pokimane', 'sodapoppin', 'asmongold', 'lirik', 'tarik'];
+                const mockStreams = realStreamers.map((name, i) => {
+                     const mock = MockVideoAPIService._generateMockStream();
+                     mock.user_name = name;
+                     mock.author = name.charAt(0).toUpperCase() + name.slice(1);
+                     mock.id = `twitch-${name}-${i}`;
+                     return mock;
+                });
                 return mockStreams;
             } catch (error) {
                  console.error('Failed to generate mock Twitch streams:', error);
@@ -485,56 +491,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     /** Creates and returns an HTML element for a Buffet recommendation card (list view). */
     const renderBuffetCard = (video: any): HTMLElement => {
         const card = document.createElement('div');
-        card.className = 'buffet-card list-view-card flex gap-4 p-3 rounded-lg cursor-pointer hover:bg-gray-700/50 border border-transparent hover:border-pink-500/50';
+        const aspectRatio = video.orientation === 'portrait' ? 'aspect-[9/16]' : 'aspect-video';
+        card.className = `buffet-card group relative overflow-hidden rounded-lg shadow-md cursor-pointer ${aspectRatio} bg-gray-700 grid-item`;
         card.dataset.videoId = video.id;
         card.dataset.platform = video.platform;
     
-        // Left side - Thumbnail
-        const thumbnailContainer = document.createElement('div');
-        thumbnailContainer.className = 'w-40 flex-shrink-0 relative';
-        
-        const thumbnailImg = document.createElement('img');
-        thumbnailImg.src = video.thumbnailUrl;
-        thumbnailImg.alt = video.title;
-        thumbnailImg.className = 'w-full h-full object-cover rounded-md aspect-video';
-        thumbnailContainer.appendChild(thumbnailImg);
-        
-        const logoContainer = document.createElement('div');
-        logoContainer.className = 'absolute top-1 left-1 bg-black/50 p-1 rounded-full';
-        if (platformLogos[video.platform]) {
-            const logoWrapper = document.createElement('div');
-            logoWrapper.className = 'w-6 h-6 text-white';
-            logoWrapper.innerHTML = platformLogos[video.platform].replace(/w-12 h-12/g, '');
-            logoContainer.appendChild(logoWrapper);
-        }
-        thumbnailContainer.appendChild(logoContainer);
-    
-        // Right side - Info
-        const infoContainer = document.createElement('div');
-        infoContainer.className = 'flex flex-col justify-center overflow-hidden';
-        
-        const title = document.createElement('h3');
-        title.className = 'font-semibold text-white text-sm truncate';
-        title.textContent = video.title;
-        infoContainer.appendChild(title);
-        
-        const author = document.createElement('p');
-        author.className = 'text-xs text-gray-400 truncate';
-        author.textContent = `by ${video.author}`;
-        infoContainer.appendChild(author);
-    
-        const reason = document.createElement('p');
-        reason.className = 'text-xs text-pink-300 italic mt-2 reason-text';
-        const reasonPrefix = document.createElement('span');
-        reasonPrefix.className = 'font-bold not-italic text-pink-400';
-        reasonPrefix.textContent = 'OINK AI says: ';
-        reason.appendChild(reasonPrefix);
-        reason.appendChild(document.createTextNode(video.reason));
-        infoContainer.appendChild(reason);
-    
-        card.appendChild(thumbnailContainer);
-        card.appendChild(infoContainer);
-    
+        // Main content remains similar to renderVideoCard for visual consistency in a grid
+        card.innerHTML = `
+            <img src="${video.thumbnailUrl}" alt="${video.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end">
+                 <div class="p-3 text-white">
+                    <p class="text-xs text-pink-300 italic mb-1 reason-text"><span class="font-bold not-italic text-pink-400">OINK AI:</span> ${video.reason}</p>
+                    <h3 class="font-semibold truncate text-sm">${video.title}</h3>
+                    <div class="flex justify-between items-center text-xs text-gray-300 mt-1">
+                         <p class="truncate">by ${video.author}</p>
+                         <p class="font-semibold">${formatNumber(video.viewCount)} views</p>
+                    </div>
+                </div>
+            </div>
+        `;
         return card;
     };
 
@@ -614,7 +589,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         playerFeed.classList.remove('masonry-grid'); 
 
         // Buffet and Mud Hole views have custom static content and are handled in their respective functions.
-        if (state.currentAppView === 'buffet' || state.currentAppView === 'mudhole') return;
+        if (state.currentAppView === 'mudhole') return;
 
         let videosToDisplay: any[] = [];
         let useMasonry = true;
@@ -632,6 +607,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             case 'hoggwild':
                 videosToDisplay = state.hoggWildPlaylist;
                 break;
+            case 'buffet':
+                videosToDisplay = state.buffetPlaylist;
+                cardRenderer = renderBuffetCard;
+                break;
             case 'player':
                 if (state.currentPlayerPlatform) {
                     const sortedPlatformVideos = [...state.allVideos[state.currentPlayerPlatform]];
@@ -648,6 +627,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             let card;
             if (video.platform === 'x') card = renderXCard(video);
             else if (video.platform === 'twitch') card = renderTwitchCard(video);
+            else if (video.platform === 'live') card = renderLiveVideoCard(video);
             else card = cardRenderer(video); // Use the determined renderer
             fragment.appendChild(card);
         });
@@ -784,49 +764,60 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePlayerFeedDisplay();
     };
     
-    /** Opens the live video view. */
-    const openLiveView = () => {
-        if (state.liveVideos.length === 0) {
-            showNotification("Connecting to the forage... try again in a moment.");
-            return;
-        }
+    /** Opens the live video Buffet view. */
+    const openLiveView = async () => {
         state.currentPlayerPlatform = null;
-        transitionToPlayerView('live', `OINK PEN - <span class="font-cursive">Forage</span>`);
+        transitionToPlayerView('live', `The Buffet - <span class="font-cursive">Finding Truffles...</span>`);
         playerView.classList.add('is-live-mode');
-        buffetAddFeedBtn.classList.add('hidden');
-        updatePlayerFeedDisplay();
-        playVideo(state.liveVideos[0]);
+        buffetAddFeedBtn.classList.remove('hidden');
+        playerFeed.innerHTML = `<div class="text-center text-gray-400 p-8"><svg class="animate-spin h-8 w-8 text-pink-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>`;
+
+        await checkForNewLiveVideos();
+
+        if (state.liveVideos.length > 0) {
+            platformTroughTitle.innerHTML = `The Buffet - <span class="font-cursive">Fresh Truffles</span>`;
+            updatePlayerFeedDisplay();
+            playVideo(state.liveVideos[0]);
+        } else {
+            platformTroughTitle.innerHTML = `The Buffet - <span class="font-cursive">Empty</span>`;
+            playerFeed.innerHTML = `<div class="text-center text-gray-400 p-8"><h3 class="font-brand text-2xl text-pink-400 mb-2">The Buffet is Quiet</h3><p>No fresh Truffles found right now. Check back soon!</p></div>`;
+            playerTitle.textContent = 'No Live Truffles';
+            playerAuthor.textContent = 'The Buffet is currently empty';
+            mobilePlayerTitle.textContent = 'No Live Truffles';
+            mobilePlayerAuthor.textContent = 'The Buffet is currently empty';
+        }
     };
 
-    /** Opens the AI-powered Buffet view. */
+    /** Opens the AI-powered Forage view. */
     const openBuffetView = async () => {
         state.currentPlayerPlatform = null;
-        transitionToPlayerView('buffet', `The Buffet - <span class="font-cursive">Personalized Feed</span>`);
+        transitionToPlayerView('buffet', `The Forage - <span class="font-cursive">AI-Powered Feed</span>`);
         playerView.classList.remove('is-live-mode');
-        buffetAddFeedBtn.classList.remove('hidden');
+        // FEED ME button is now in the Buffet view (live view) not Forage.
+        buffetAddFeedBtn.classList.add('hidden');
 
         if (state.watchHistory.length === 0) {
             playerFeed.innerHTML = `
                 <div class="text-center text-gray-400 p-8 flex flex-col items-center gap-4">
-                    <h3 class="font-brand text-2xl text-pink-400 mb-2">Your Buffet is Empty!</h3>
-                    <p>Watch some videos to get started, or use the "FEED ME" button to add more sources and discover new slop!</p>
+                    <h3 class="font-brand text-2xl text-pink-400 mb-2">Nothing to Forage!</h3>
+                    <p>Watch some videos to give the AI Forager a scent to follow.</p>
                 </div>
             `;
-            playerTitle.textContent = "Your Buffet is waiting";
-            playerAuthor.textContent = "Start watching to get recommendations";
-            mobilePlayerTitle.textContent = "Your Buffet is waiting";
-            mobilePlayerAuthor.textContent = "Start watching to get recommendations";
+            playerTitle.textContent = "Your Forage awaits";
+            playerAuthor.textContent = "Start watching to get AI recommendations";
+            mobilePlayerTitle.textContent = "Your Forage awaits";
+            mobilePlayerAuthor.textContent = "Start watching to get AI recommendations";
             return;
         }
 
-        playerTitle.textContent = "Your Buffet is being prepared...";
-        playerAuthor.textContent = "Powered by Gemini";
-        mobilePlayerTitle.textContent = "Your Buffet is being prepared...";
-        mobilePlayerAuthor.textContent = "Powered by Gemini";
+        playerTitle.textContent = "Foraging for content...";
+        playerAuthor.textContent = "AI Forager at work...";
+        mobilePlayerTitle.textContent = "Foraging for content...";
+        mobilePlayerAuthor.textContent = "AI Forager at work...";
         playerFeed.innerHTML = `
             <div class="text-center text-gray-400 p-8 flex flex-col items-center justify-center gap-4">
                 <svg class="animate-spin h-8 w-8 text-pink-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <p>Consulting the AI chef to cook up your personalized slop...</p>
+                <p>The AI Forager is sniffing out the best slop for you...</p>
             </div>`;
 
         try {
@@ -863,20 +854,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             const recommendations = resultJson.recommendations || [];
             if (recommendations.length === 0) throw new Error("AI did not return any recommendations.");
 
-            state.buffetPlaylist = recommendations.map((rec: any) => {
-                const platformVideos = state.allVideos[rec.platform] || [];
-                // Find a random video as a base, fallback to any video if none for that platform exist
-                const randomVideo = platformVideos.length > 0
-                    ? platformVideos[Math.floor(Math.random() * platformVideos.length)]
-                    : Object.values(state.allVideos).flat()[Math.floor(Math.random() * Object.values(state.allVideos).flat().length)];
-                return { ...randomVideo, ...rec, id: `buffet-${Math.random()}` };
+            state.buffetPlaylist = recommendations.map((rec: any, index: number) => {
+                const isPortrait = rec.platform === 'tiktok';
+                const videoId = MockVideoAPIService._youtubeIds[index % MockVideoAPIService._youtubeIds.length]; // Cycle through real IDs
+                const thumbUrl = isPortrait ? `https://picsum.photos/seed/buffet${index}/360/640` : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+                const mockAuthor = MockVideoAPIService._authors[index % MockVideoAPIService._authors.length];
+
+                return { 
+                    id: videoId, // Use a real, playable ID
+                    platform: rec.platform,
+                    title: rec.title,
+                    author: rec.author || mockAuthor,
+                    reason: rec.reason,
+                    thumbnailUrl: thumbUrl,
+                    orientation: isPortrait ? 'portrait' : 'landscape',
+                    viewCount: Math.floor(Math.random() * 5000000) + 50000,
+                    viralityScore: Math.floor(Math.random() * 1000),
+                    ...(isPortrait && { mockVideoId: videoId })
+                };
             });
 
-            playerFeed.innerHTML = '';
-            const fragment = document.createDocumentFragment();
-            state.buffetPlaylist.forEach(video => fragment.appendChild(renderBuffetCard(video)));
-            playerFeed.appendChild(fragment);
-
+            updatePlayerFeedDisplay();
             state.currentBuffetIndex = 0;
             playVideo(state.buffetPlaylist[0]);
 
@@ -884,8 +882,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Gemini API call failed:", error);
             playerFeed.innerHTML = `
                 <div class="text-center text-gray-400 p-8">
-                    <h3 class="font-brand text-2xl text-pink-400 mb-2">AI Chef is on a Break!</h3>
-                    <p>We couldn't generate your personalized Buffet this time. Please try again later.</p>
+                    <h3 class="font-brand text-2xl text-pink-400 mb-2">AI Forager Got Lost!</h3>
+                    <p>We couldn't Forage for you this time. Please try again later.</p>
                 </div>
             `;
         }
@@ -968,16 +966,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             showNotification("No playable videos loaded for HOGG WILD. Feeds might still be populating.");
             return;
         }
-        // Shuffle the playlist
-        state.hoggWildPlaylist = playableVideos
-            .map(value => ({ value, sort: Math.random() }))
-            .sort((a, b) => a.sort - b.sort)
-            .map(({ value }) => value);
-
+        
         state.currentPlayerPlatform = null;
         transitionToPlayerView('hoggwild', `HOGG WILD - <span class="font-cursive">Slop Trough</span>`);
         playerView.classList.remove('is-live-mode');
         buffetAddFeedBtn.classList.add('hidden');
+
+        // Shuffle and create the playlist *after* transitioning to the view, which clears old playlists.
+        state.hoggWildPlaylist = playableVideos
+            .map(value => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value);
 
         updatePlayerFeedDisplay();
         state.currentHoggWildIndex = 0;
@@ -985,439 +984,440 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // =================================================================================
-    // --- VIDEO PLAYER LOGIC ---
+    // --- VIDEO PLAYER LOGIC & CONTROL ---
     // =================================================================================
 
-    /**
-     * Plays a selected video, handling UI updates and loading the correct player.
-     * @param videoData - The data object for the video to play.
-     */
-    const playVideo = (videoData: any) => {
-        if (!videoData) return;
-        state.currentlyPlayingVideoId = videoData.id;
-
-        // Update watch history (if not a live video)
-        if (!videoData.isLive) {
-            state.watchHistory = state.watchHistory.filter(v => v.id !== videoData.id);
-            state.watchHistory.unshift(videoData);
-            if (state.watchHistory.length > 100) state.watchHistory.pop();
-            localStorage.setItem('oinkHistory', JSON.stringify(state.watchHistory));
-        }
-        
-        // Update titles and author text
-        const titleText = videoData.platform === 'x' ? videoData.text : videoData.title;
-        const authorText = `by ${videoData.author}`;
-        let displayTitle = titleText;
-        if (videoData.isLive) displayTitle = `LIVE: ${titleText}`;
-        else if (state.buffetPlaylist.length > 0 && state.buffetPlaylist.some(v => v.id === videoData.id)) displayTitle = `The Buffet: ${titleText}`;
-        else if (state.hoggWildPlaylist.length > 0 && state.hoggWildPlaylist.some(v => v.id === videoData.id)) displayTitle = `SLOP: ${titleText}`;
-        else if (state.currentPlayerPlatform) displayTitle = `Prime Cuts: ${titleText}`;
-        
-        playerTitle.textContent = displayTitle;
-        playerAuthor.textContent = authorText;
-        mobilePlayerTitle.textContent = titleText;
-        mobilePlayerAuthor.textContent = authorText;
-
-        // Load video into the appropriate player
-        if (state.ytPlayer && typeof state.ytPlayer.stopVideo === 'function') state.ytPlayer.stopVideo();
-        switch(videoData.platform) {
-            case 'youtube':
-                playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row youtube-active';
-                embedPlayer.innerHTML = '';
-                const videoId = typeof videoData.id === 'string' ? videoData.id.replace('youtube-', '') : videoData.id;
-                if (state.isYtPlayerReady && state.ytPlayer && typeof state.ytPlayer.loadVideoById === 'function') {
-                    state.ytPlayer.loadVideoById(videoId);
-                } else {
-                     state.queuedYouTubeVideo = videoData;
-                }
-                break;
-            case 'tiktok':
-            case 'twitch':
-                playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row embed-active';
-                const embedHtml = videoData.platform === 'twitch' 
-                    ? `<iframe src="https://player.twitch.tv/?channel=${videoData.user_name}&parent=www.oink-app.com&autoplay=true&muted=false" height="100%" width="100%" allowfullscreen></iframe>`
-                    : videoData.embedHtml;
-                embedPlayer.innerHTML = embedHtml;
-                break;
-            default:
-                playerContainer.className = 'relative w-full max-w-6xl mx-auto bg-black flex flex-col md:flex-row';
-                embedPlayer.innerHTML = `<div class="w-full h-full bg-black flex items-center justify-center text-white p-4 text-center"><p>This content type is not yet supported in the player.<br/>Playing a placeholder.</p></div>`;
-                showNotification("This content type is not yet supported in the player.");
-                break;
-        }
-        
-        progressBar.value = 0;
-        updatePlayerHighlighting();
-    };
-
-    /** Plays the next video in the current trough/playlist. */
-    const playNextVideo = () => {
-        if (state.hoggWildPlaylist.length > 0) {
-            state.currentHoggWildIndex++;
-            if (state.currentHoggWildIndex < state.hoggWildPlaylist.length) {
-                playVideo(state.hoggWildPlaylist[state.currentHoggWildIndex]);
+    /** Updates the play/pause button icon based on the YouTube player's state. */
+    const updatePlayPauseIcon = () => {
+        if (state.ytPlayer && typeof state.ytPlayer.getPlayerState === 'function') {
+            const playerState = state.ytPlayer.getPlayerState();
+            if (playerState === YT.PlayerState.PLAYING) {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
             } else {
-                closePlayerView();
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
             }
-        } else if (state.buffetPlaylist.length > 0) {
-            state.currentBuffetIndex++;
-            if (state.currentBuffetIndex < state.buffetPlaylist.length) {
-                playVideo(state.buffetPlaylist[state.currentBuffetIndex]);
-            } else {
-                showNotification("That's all for this Buffet!");
-                closePlayerView();
-            }
-        } else if (state.currentPlayerPlatform) {
-            const platformVideos = state.allVideos[state.currentPlayerPlatform] || [];
-            const sortedVideos = [...platformVideos];
-            if (state.currentPlayerPlatform !== 'twitch' && state.currentPlayerPlatform !== 'x') {
-                sortedVideos.sort((a, b) => (b.viralityScore || 0) - (a.viralityScore || 0));
-            }
-            const currentIndex = sortedVideos.findIndex(v => v.id === state.currentlyPlayingVideoId);
-            if (currentIndex !== -1 && currentIndex < sortedVideos.length - 1) {
-                playVideo(sortedVideos[currentIndex + 1]);
-            } else {
-                closePlayerView();
-            }
+        } else {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
         }
     };
-    
-    /** Adds or removes the 'is-playing' class from cards. */
+
+    /** Highlights the currently playing video in the side feed. */
     const updatePlayerHighlighting = () => {
-        document.querySelectorAll('.is-playing').forEach(el => el.classList.remove('is-playing'));
-        if (state.currentlyPlayingVideoId) {
-            document.querySelectorAll(`[data-video-id="${state.currentlyPlayingVideoId}"]`).forEach(el => el.classList.add('is-playing'));
+        const allCards = playerFeed.querySelectorAll('.live-card, .group, .x-card, .buffet-card');
+        allCards.forEach(card => {
+            const htmlCard = card as HTMLElement;
+            htmlCard.classList.toggle('outline-pink-500', htmlCard.dataset.videoId === state.currentlyPlayingVideoId);
+        });
+    };
+
+    /** Adds a video to the watch history, preventing duplicates and capping the list size. */
+    const addToHistory = (videoData: any) => {
+        const existingIndex = state.watchHistory.findIndex(v => v.id === videoData.id);
+        if (existingIndex > -1) {
+            state.watchHistory.splice(existingIndex, 1);
+        }
+        state.watchHistory.unshift(videoData);
+        if (state.watchHistory.length > 50) {
+            state.watchHistory.pop();
         }
     };
     
-    // --- YOUTUBE PLAYER CONTROLS & EVENTS ---
-
-    /** Callback for when the YouTube player is ready. */
-    const onPlayerReady = () => {
-        state.isYtPlayerReady = true;
-        updateVolumeUI();
-        if (state.queuedYouTubeVideo) {
-            playVideo(state.queuedYouTubeVideo);
-            state.queuedYouTubeVideo = null;
+    /** Updates the custom progress bar based on the video's current time. */
+    const updateProgressBar = () => {
+        if (state.ytPlayer && typeof state.ytPlayer.getCurrentTime === 'function') {
+            const currentTime = state.ytPlayer.getCurrentTime();
+            const duration = state.ytPlayer.getDuration();
+            progressBar.value = duration > 0 ? (currentTime / duration) * 100 : 0;
+            currentTimeEl.textContent = formatTime(currentTime);
+            durationEl.textContent = formatTime(duration);
         }
     };
 
-    /** Callback for YouTube player state changes (playing, paused, ended). */
+    /** YouTube player ready event handler. */
+    const onPlayerReady = (event: any) => {
+        event.target.playVideo();
+        updatePlayPauseIcon();
+        if (state.ytPlayer && typeof state.ytPlayer.getVolume === 'function') {
+            volumeSlider.value = String(state.ytPlayer.getVolume());
+        }
+    };
+
+    /** YouTube player state change event handler. */
     const onPlayerStateChange = (event: any) => {
         updatePlayPauseIcon();
         if (event.data === YT.PlayerState.PLAYING) {
-            updateVolumeUI();
-            state.playerUpdateInterval = window.setInterval(updateVideoProgress, 250);
+            state.playerUpdateInterval = window.setInterval(updateProgressBar, 250);
         } else {
             clearInterval(state.playerUpdateInterval);
         }
+
         if (event.data === YT.PlayerState.ENDED) {
-            // Don't auto-play next in history or live views.
-            if (state.currentAppView !== 'history' && state.currentAppView !== 'live') {
-                playNextVideo();
+            if (state.currentAppView === 'hoggwild' && state.hoggWildPlaylist.length > 0) {
+                state.currentHoggWildIndex = (state.currentHoggWildIndex + 1) % state.hoggWildPlaylist.length;
+                playVideo(state.hoggWildPlaylist[state.currentHoggWildIndex]);
+            } else if (state.currentAppView === 'buffet' && state.buffetPlaylist.length > 0) {
+                state.currentBuffetIndex = (state.currentBuffetIndex + 1) % state.buffetPlaylist.length;
+                playVideo(state.buffetPlaylist[state.currentBuffetIndex]);
             }
         }
     };
 
-    const updatePlayPauseIcon = () => {
-        if (!state.ytPlayer || typeof state.ytPlayer.getPlayerState !== 'function') return;
-        const isPlaying = state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING;
-        playIcon.classList.toggle('hidden', isPlaying);
-        pauseIcon.classList.toggle('hidden', !isPlaying);
+    /** Initializes the YouTube player instance. */
+    const createYtPlayer = (videoId: string) => {
+        if (state.ytPlayer && typeof state.ytPlayer.destroy === 'function') {
+            state.ytPlayer.destroy();
+        }
+        document.getElementById('video-controls')?.classList.remove('hidden');
+        state.ytPlayer = new YT.Player('youtube-player', {
+            height: '100%',
+            width: '100%',
+            videoId: videoId,
+            playerVars: {
+                'autoplay': 1, 'controls': 0, 'rel': 0, 'showinfo': 0,
+                'modestbranding': 1, 'iv_load_policy': 3, 'fs': 0,
+            },
+            events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+        });
     };
 
-    const updateVideoProgress = () => {
-        if (!state.ytPlayer || typeof state.ytPlayer.getCurrentTime !== 'function') return;
-        const currentTime = state.ytPlayer.getCurrentTime();
-        const duration = state.ytPlayer.getDuration();
-        progressBar.value = (currentTime / duration) * 100 || 0;
-        currentTimeEl.textContent = formatTime(currentTime);
-        durationEl.textContent = formatTime(duration);
+    /** Loads the appropriate video player (YouTube, Twitch, etc.) into the embed container. */
+    const loadPlayerForVideo = (videoData: any) => {
+        if (state.ytPlayer && typeof state.ytPlayer.destroy === 'function') {
+            state.ytPlayer.destroy();
+            state.ytPlayer = null;
+        }
+        if (state.playerUpdateInterval) clearInterval(state.playerUpdateInterval);
+        embedPlayer.innerHTML = '';
+        document.getElementById('video-controls')?.classList.add('hidden');
+
+        const isPortrait = videoData.orientation === 'portrait';
+        playerContainer.classList.toggle('aspect-video', !isPortrait);
+        playerContainer.classList.toggle('aspect-[9/16]', isPortrait);
+        playerContainer.classList.toggle('md:aspect-auto', isPortrait);
+
+        const videoId = videoData.mockVideoId || videoData.id;
+
+        switch (videoData.platform) {
+            case 'youtube':
+            case 'tiktok':
+            case 'live':
+            default:
+                embedPlayer.innerHTML = `<div id="youtube-player" class="w-full h-full"></div>`;
+                if (state.isYtPlayerReady) createYtPlayer(videoId);
+                else state.queuedYouTubeVideo = videoId;
+                break;
+            
+            case 'twitch':
+                embedPlayer.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${videoData.user_name}&parent=${window.location.hostname}&autoplay=true&muted=false" class="w-full h-full" allowfullscreen></iframe>`;
+                break;
+                
+            case 'x':
+                 embedPlayer.innerHTML = `<div class="w-full h-full bg-gray-900 flex flex-col items-center justify-center p-4 text-center"><div class="max-w-md">${renderXCard(videoData).innerHTML}</div><p class="mt-4 text-gray-400 text-sm">X video playback not supported directly. View on X.</p></div>`;
+                 break;
+        }
     };
 
-    const updateVolumeUI = () => {
-        if (!state.ytPlayer || typeof state.ytPlayer.isMuted !== 'function') return;
-        const isMuted = state.ytPlayer.isMuted() || state.ytPlayer.getVolume() === 0;
-        volumeHighIcon.classList.toggle('hidden', isMuted);
-        volumeMutedIcon.classList.toggle('hidden', !isMuted);
-        volumeSlider.value = isMuted ? '0' : (state.ytPlayer.getVolume() / 100).toString();
+    /** Main function to play a video. Orchestrates UI updates and player loading. */
+    const playVideo = (videoData: any) => {
+        if (!videoData || videoData.id === state.currentlyPlayingVideoId) return;
+
+        state.currentlyPlayingVideoId = videoData.id;
+        
+        addToHistory(videoData);
+        updatePlayerInfo(videoData);
+        loadPlayerForVideo(videoData);
+        updatePlayerHighlighting();
+    };
+
+    /** Updates the UI text elements (titles, author) for the currently playing video. */
+    const updatePlayerInfo = (videoData: any) => {
+        const titleText = videoData.platform === 'x' ? videoData.text : videoData.title;
+        const authorText = `by ${videoData.author}`;
+        let displayTitle = titleText;
+        
+        if (videoData.isLive) {
+            displayTitle = `LIVE: ${titleText}`;
+        } else if (state.currentAppView === 'buffet') {
+            displayTitle = `Foraged: ${titleText}`;
+        } else if (state.currentAppView === 'hoggwild') {
+            displayTitle = `SLOP: ${titleText}`;
+        } else if (state.currentAppView === 'history') {
+            displayTitle = `Left-Over: ${titleText}`;
+        }
+
+        playerTitle.textContent = displayTitle;
+        playerAuthor.textContent = authorText;
+        mobilePlayerTitle.textContent = displayTitle;
+        mobilePlayerAuthor.textContent = authorText;
     };
 
     // =================================================================================
-    // --- MODALS & NOTIFICATIONS ---
+    // --- EVENT LISTENERS ---
     // =================================================================================
+
+    document.addEventListener('youtube-api-ready', () => {
+        state.isYtPlayerReady = true;
+        if (state.queuedYouTubeVideo) {
+            createYtPlayer(state.queuedYouTubeVideo);
+            state.queuedYouTubeVideo = null;
+        }
+    });
+
+    primeCutsBtn.addEventListener('click', closePlayerView);
+    hoggWildBtn.addEventListener('click', startHoggWildStream);
+    livePenBtn.addEventListener('click', openLiveView);
+    buffetBtn.addEventListener('click', openBuffetView);
+    mudHoleBtn.addEventListener('click', openMudHoleView);
+    leftOversHeaderBtn.addEventListener('click', openWatchAgainView);
     
-    /** Displays a short-lived notification message. */
-    const showNotification = (message: string) => {
-        clearTimeout(state.notificationTimeout);
-        notification.textContent = message;
-        notification.classList.remove('opacity-0');
-        state.notificationTimeout = window.setTimeout(() => {
-            notification.classList.add('opacity-0');
-        }, 4000);
-    };
+    backToFeedBtn.addEventListener('click', closePlayerView);
+    watchAgainBtn.addEventListener('click', openWatchAgainView);
+
+    document.body.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const videoCard = target.closest('.grid-item, .live-card');
+
+        if (videoCard) {
+            const htmlCard = videoCard as HTMLElement;
+            const videoId = htmlCard.dataset.videoId;
+            const platform = htmlCard.dataset.platform;
+            if (!videoId || !platform) return;
+
+            if (state.currentAppView === 'feed') {
+                openPlayerView(platform);
+            }
+
+            let videoData;
+            if (state.currentAppView === 'live') {
+                videoData = state.liveVideos.find(v => v.id === videoId);
+            } else if (state.currentAppView === 'history') {
+                videoData = state.watchHistory.find(v => v.id === videoId);
+            } else if (state.currentAppView === 'hoggwild') {
+                videoData = state.hoggWildPlaylist.find(v => v.id === videoId);
+            } else if (state.currentAppView === 'buffet') {
+                videoData = state.buffetPlaylist.find(v => v.id === videoId);
+            } else {
+                videoData = (state.allVideos[platform] || []).find(v => v.id === videoId);
+            }
+            
+            if (videoData) {
+                playVideo(videoData);
+            }
+        }
+    });
+
+    playPauseBtn.addEventListener('click', () => {
+        if (state.ytPlayer && typeof state.ytPlayer.getPlayerState === 'function') {
+            const playerState = state.ytPlayer.getPlayerState();
+            if (playerState === YT.PlayerState.PLAYING) state.ytPlayer.pauseVideo();
+            else state.ytPlayer.playVideo();
+            updatePlayPauseIcon();
+        }
+    });
+
+    volumeBtn.addEventListener('click', () => {
+        if (state.ytPlayer && typeof state.ytPlayer.isMuted === 'function') {
+            if (state.ytPlayer.isMuted()) {
+                state.ytPlayer.unMute();
+                volumeHighIcon.classList.remove('hidden');
+                volumeMutedIcon.classList.add('hidden');
+            } else {
+                state.ytPlayer.mute();
+                volumeHighIcon.classList.add('hidden');
+                volumeMutedIcon.classList.remove('hidden');
+            }
+        }
+    });
+
+    volumeSlider.addEventListener('input', (e) => {
+        const volume = parseInt((e.target as HTMLInputElement).value, 10);
+        if (state.ytPlayer && typeof state.ytPlayer.setVolume === 'function') {
+            state.ytPlayer.setVolume(volume);
+             if (volume > 0 && state.ytPlayer.isMuted()) {
+                state.ytPlayer.unMute();
+                volumeHighIcon.classList.remove('hidden');
+                volumeMutedIcon.classList.add('hidden');
+            } else if (volume === 0 && !state.ytPlayer.isMuted()) {
+                 state.ytPlayer.mute();
+                volumeHighIcon.classList.add('hidden');
+                volumeMutedIcon.classList.remove('hidden');
+            }
+        }
+    });
+
+    progressBar.addEventListener('input', (e) => {
+        const newTimePercent = parseFloat((e.target as HTMLInputElement).value);
+        if (state.ytPlayer && typeof state.ytPlayer.getDuration === 'function') {
+            const duration = state.ytPlayer.getDuration();
+            state.ytPlayer.seekTo((newTimePercent / 100) * duration, true);
+        }
+    });
+
+    fullscreenBtn.addEventListener('click', () => {
+        const playerElement = document.getElementById('player-container-wrapper') as HTMLElement;
+        if (!document.fullscreenElement) {
+            playerElement.requestFullscreen().catch(err => {
+                alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    });
 
     const openModal = (modal: HTMLElement) => {
         state.previousActiveElement = document.activeElement as HTMLElement;
         modal.classList.remove('hidden');
-        const firstFocusable = modal.querySelector('input, button') as HTMLElement;
-        firstFocusable?.focus();
+        const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
+        if (firstFocusable) firstFocusable.focus();
     };
 
     const closeModal = (modal: HTMLElement) => {
         modal.classList.add('hidden');
-        state.previousActiveElement?.focus();
+        if (state.previousActiveElement) state.previousActiveElement.focus();
     };
+    
+    addFeedBtn.addEventListener('click', () => openModal(addFeedModal));
+    closeModalBtn.addEventListener('click', () => closeModal(addFeedModal));
+    addFeedModal.addEventListener('click', (e) => {
+        if (e.target === addFeedModal) closeModal(addFeedModal);
+    });
 
-    // =================================================================================
-    // --- EVENT HANDLERS ---
-    // =================================================================================
-
-    /** Handles clicks on any video card to play the video. */
-    const handleCardClick = (e: MouseEvent) => {
-        const card = (e.target as HTMLElement).closest('[data-video-id]');
-        if (!card) return;
-
-        const videoId = (card as HTMLElement).dataset.videoId!;
-        const platformId = (card as HTMLElement).dataset.platform!;
-        let videoData = state.liveVideos.find(v => v.id === videoId)
-            || state.allVideos[platformId]?.find(v => v.id === videoId)
-            || state.watchHistory.find(v => v.id === videoId)
-            || state.buffetPlaylist.find(v => v.id === videoId);
-        
-        if (!videoData) return;
-        
-        // Open player if not already in a player view
-        if (!playerView.offsetParent) {
-            openPlayerView(platformId);
-        }
-
-        if (state.currentAppView === 'buffet' && state.buffetPlaylist.length > 0) {
-            const newIndex = state.buffetPlaylist.findIndex(v => v.id === videoData.id);
-            if (newIndex > -1) state.currentBuffetIndex = newIndex;
-        }
-        
-        playVideo(videoData);
-    };
-
-    /** Handles the share/Waller button action. */
-    const handleShare = async () => {
-        if (!state.currentlyPlayingVideoId) {
-            showNotification('No video is currently playing to share.');
-            return;
-        }
-        const videoData = Object.values(state.allVideos).flat().find(v => v.id === state.currentlyPlayingVideoId) 
-            || state.watchHistory.find(v => v.id === state.currentlyPlayingVideoId)
-            || state.liveVideos.find(v => v.id === state.currentlyPlayingVideoId)
-            || state.buffetPlaylist.find(v => v.id === state.currentlyPlayingVideoId);
-        
-        if (!videoData) return;
-
-        const virality = videoData.viralityScore || 900;
-        const points = Math.max(10, Math.round(100 - (virality / 10)));
-        let urlToShare = window.location.href; // Fallback URL
-        if (videoData.platform === 'youtube') urlToShare = `https://www.youtube.com/watch?v=${videoData.id}`;
-        if (videoData.platform === 'tiktok') urlToShare = `https://www.tiktok.com/@${videoData.author}/video/${videoData.id}`;
-        if (videoData.platform === 'twitch') urlToShare = `https://www.twitch.tv/${videoData.user_name}`;
-
-        try {
-            if (navigator.share) {
-                await navigator.share({ title: `Check out this video: ${videoData.title}`, url: urlToShare });
-                showNotification(`SLOP SHARED! +${points} WALLER Points!`);
+    customFeedForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const feedName = customFeedNameInput.value.trim();
+        if (feedName) {
+            const newPlatform = { id: feedName.toLowerCase().replace(/\s/g, '-'), name: feedName, query: feedName };
+            const exists = state.platforms.some(p => p.id === newPlatform.id);
+            if (!exists) {
+                state.platforms.push(newPlatform);
+                renderDashboardColumn(newPlatform);
+                loadMoreVideos(newPlatform);
+                 showNotification(`Custom feed "${feedName}" added!`);
             } else {
-                throw new Error('Share API not supported');
+                showNotification(`Feed "${feedName}" already exists.`);
             }
-        } catch (err: any) {
-            if (err.name === 'AbortError') return; // User cancelled share
-            try { // Fallback to clipboard
-                await navigator.clipboard.writeText(urlToShare);
-                showNotification(`SLOP SHARED! +${points} WALLER Points! Link copied.`);
-            } catch {
-                showNotification('Could not copy link to clipboard.');
+            customFeedNameInput.value = '';
+            closeModal(addFeedModal);
+        }
+    });
+
+    openMoreMenuBtn.addEventListener('click', () => openModal(moreMenuModal));
+    closeMoreMenuBtn.addEventListener('click', () => closeModal(moreMenuModal));
+    moreMenuModal.addEventListener('click', (e) => {
+        if (e.target === moreMenuModal) closeModal(moreMenuModal);
+    });
+    
+    leftOversMenuBtn.addEventListener('click', () => {
+        closeModal(moreMenuModal);
+        openWatchAgainView();
+    });
+    
+    mudHoleMenuBtn.addEventListener('click', () => {
+        closeModal(moreMenuModal);
+        openMudHoleView();
+    });
+
+    feedMeMenuBtn.addEventListener('click', () => {
+        closeModal(moreMenuModal);
+        openBuffetView();
+    });
+
+    document.getElementById('mobile-bottom-nav')?.addEventListener('click', (e) => {
+        const button = (e.target as HTMLElement).closest('.bottom-nav-btn');
+        if (button) {
+            const view = button.getAttribute('data-view');
+            switch (view) {
+                case 'feed': closePlayerView(); break;
+                case 'hoggwild': startHoggWildStream(); break;
+                case 'live': openLiveView(); break;
+                case 'buffet': openBuffetView(); break;
+                case 'more': openModal(moreMenuModal); break;
             }
         }
-    };
+    });
 
-    /** Adds a new custom platform feed. */
-    const addPlatform = (name: string) => {
-        const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (!id || state.platforms.some(p => p.id === id)) { 
-            showNotification(`Feed "${name}" already exists or is invalid.`);
-            return; 
+    document.getElementById('mobile-bottom-nav-player')?.addEventListener('click', (e) => {
+        const button = (e.target as HTMLElement).closest('.bottom-nav-btn');
+        if (button) {
+            const view = button.getAttribute('data-view');
+             switch (view) {
+                case 'feed': closePlayerView(); break;
+                case 'hoggwild': startHoggWildStream(); break;
+                case 'live': openLiveView(); break;
+                case 'buffet': openBuffetView(); break;
+                case 'more': openModal(moreMenuModal); break;
+            }
         }
-        const newPlatform = { id, name, query: name };
-        state.platforms.push(newPlatform);
-        state.allVideos[id] = [];
-        state.pageTrackers[id] = 1;
+    });
 
-        renderDashboardColumn(newPlatform);
-        createMobileToggleBoard(); // Re-render mobile toggles
-        loadMoreVideos(newPlatform);
-        closeModal(addFeedModal);
-    };
-
-    /** Binds all the application's event listeners. */
-    const bindEventListeners = () => {
-        // Main Navigation
-        primeCutsBtn.addEventListener('click', closePlayerView);
-        hoggWildBtn.addEventListener('click', startHoggWildStream);
-        livePenBtn.addEventListener('click', openLiveView);
-        buffetBtn.addEventListener('click', openBuffetView);
-        mudHoleBtn.addEventListener('click', openMudHoleView);
-        leftOversHeaderBtn.addEventListener('click', openWatchAgainView);
-        
-        // Player Actions
-        backToFeedBtn.addEventListener('click', closePlayerView);
-        shareBtn.addEventListener('click', handleShare);
-        mobileShareBtn.addEventListener('click', handleShare);
-        watchAgainBtn.addEventListener('click', openWatchAgainView);
-        buffetAddFeedBtn.addEventListener('click', () => openModal(addFeedModal));
-
-        // Player Controls
-        playPauseBtn.addEventListener('click', () => {
-            if (!state.ytPlayer || typeof state.ytPlayer.getPlayerState !== 'function') return;
-            state.ytPlayer.getPlayerState() === YT.PlayerState.PLAYING ? state.ytPlayer.pauseVideo() : state.ytPlayer.playVideo();
-        });
-        progressBar.addEventListener('click', (e) => {
-            if (!state.ytPlayer || typeof state.ytPlayer.getDuration !== 'function') return;
-            const duration = state.ytPlayer.getDuration();
-            state.ytPlayer.seekTo((e.offsetX / progressBar.clientWidth) * duration);
-        });
-        volumeBtn.addEventListener('click', () => {
-            if (!state.ytPlayer || typeof state.ytPlayer.isMuted !== 'function') return;
-            state.ytPlayer.isMuted() ? state.ytPlayer.unMute() : state.ytPlayer.mute();
-        });
-        volumeSlider.addEventListener('input', (e) => {
-            if (!state.ytPlayer || typeof state.ytPlayer.setVolume !== 'function') return;
-            const newVolume = parseFloat((e.target as HTMLInputElement).value);
-            state.ytPlayer.setVolume(newVolume * 100);
-            newVolume === 0 ? state.ytPlayer.mute() : state.ytPlayer.unMute();
-        });
-        fullscreenBtn.addEventListener('click', () => {
-            document.fullscreenElement ? document.exitFullscreen() : playerContainer.requestFullscreen();
-        });
-
-        // Modals
-        addFeedBtn.addEventListener('click', () => openModal(addFeedModal));
-        closeModalBtn.addEventListener('click', () => closeModal(addFeedModal));
-        addFeedModal.addEventListener('click', (e) => { if (e.target === addFeedModal) closeModal(addFeedModal); });
-        customFeedForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newName = customFeedNameInput.value.trim();
-            if (newName) { addPlatform(newName); customFeedNameInput.value = ''; }
-        });
-        document.querySelectorAll('.add-suggestion-btn').forEach(button => {
-            button.addEventListener('click', (e) => addPlatform((e.target as HTMLElement).dataset.name!));
-        });
-        
-        // Mobile "More" Menu
-        openMoreMenuBtn.addEventListener('click', () => openModal(moreMenuModal));
-        closeMoreMenuBtn.addEventListener('click', () => closeModal(moreMenuModal));
-        leftOversMenuBtn.addEventListener('click', () => { closeModal(moreMenuModal); openWatchAgainView(); });
-        mudHoleMenuBtn.addEventListener('click', () => { closeModal(moreMenuModal); openMudHoleView(); });
-        feedMeMenuBtn.addEventListener('click', () => { closeModal(moreMenuModal); openModal(addFeedModal); });
-
-        // Global Listeners
-        document.body.addEventListener('click', handleCardClick);
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !addFeedModal.classList.contains('hidden')) closeModal(addFeedModal);
-            if (e.key === 'Escape' && !moreMenuModal.classList.contains('hidden')) closeModal(moreMenuModal);
-        });
-    };
+    document.body.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const button = target.closest('#mobile-platform-filters button');
+        if (button && button.parentElement?.id === 'mobile-platform-filters' && button.hasAttribute('data-platform')) {
+            document.querySelectorAll('#mobile-platform-filters button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            state.mobileActivePlatform = button.getAttribute('data-platform') as string;
+            renderMobileFeed();
+        }
+    });
 
     // =================================================================================
     // --- INITIALIZATION ---
     // =================================================================================
 
-    /** Creates the platform toggle buttons for the mobile view. */
-    const createMobileToggleBoard = () => {
-        mobileDashboard.innerHTML = '';
-        const toggleContainer = document.createElement('div');
-        toggleContainer.id = 'mobile-platform-toggle';
-        toggleContainer.className = 'sticky top-0 bg-gray-900/80 backdrop-blur-sm p-2 flex justify-center gap-4 border-b border-gray-700 overflow-x-auto no-scrollbar';
-
-        [{id: 'all', name: 'All'}, ...state.platforms].forEach(platform => {
-            const button = document.createElement('button');
-            button.dataset.platform = platform.id;
-            button.textContent = platform.name;
-            button.className = `mobile-toggle-btn font-brand text-lg text-gray-300 px-2 py-1 whitespace-nowrap ${platform.id === state.mobileActivePlatform ? 'active' : ''}`;
-            button.addEventListener('click', () => {
-                state.mobileActivePlatform = platform.id;
-                document.querySelectorAll('.mobile-toggle-btn').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                renderMobileFeed();
-            });
-            toggleContainer.appendChild(button);
-        });
-        
-        mobileDashboard.appendChild(toggleContainer);
-        const feedContentContainer = document.createElement('div');
-        feedContentContainer.id = 'mobile-feed-content';
-        mobileDashboard.appendChild(feedContentContainer);
-    };
-
-    /** Sets up the application on initial load. */
     const initializeApp = async () => {
-        // Load assets
-        try {
-            const logoB64 = await (await fetch('./src/assets/logo.b64')).text();
-            const logoSrc = `data:image/png;base64,${logoB64}`;
-            (document.getElementById('favicon') as HTMLLinkElement).href = logoSrc;
-            (document.getElementById('loading-logo') as HTMLImageElement).src = logoSrc;
-        } catch (e) { console.error('Failed to load branding assets.', e); }
+        // Set logo and favicon
+        const favicon = document.getElementById('favicon') as HTMLLinkElement;
+        const loadingLogo = document.getElementById('loading-logo') as HTMLImageElement;
+        const logoDataUri = `data:image/jpeg;base64,${LOGO_B64_JPG}`;
+        if (favicon) favicon.href = logoDataUri;
+        if (loadingLogo) loadingLogo.src = logoDataUri;
+        
+        // Hide loading screen
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading-screen');
+            if(loadingScreen) {
+                loadingScreen.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => loadingScreen.classList.add('hidden'), 500);
+            }
+        }, 300);
 
-        const savedHistory = localStorage.getItem('oinkHistory');
-        if (savedHistory) state.watchHistory = JSON.parse(savedHistory);
+        // Initialize mobile dashboard elements
+        const mobileDashboardContainer = document.getElementById('mobile-dashboard');
+        if (mobileDashboardContainer) {
+            const platformFilters = document.createElement('div');
+            platformFilters.id = 'mobile-platform-filters';
+            platformFilters.className = 'sticky top-0 bg-gray-900/80 backdrop-blur-sm z-30 flex justify-center items-center gap-2 p-2 overflow-x-auto no-scrollbar';
 
-        updateNavStates(state.currentAppView);
-        createMobileToggleBoard();
+            const allBtn = document.createElement('button');
+            allBtn.dataset.platform = 'all';
+            allBtn.className = 'mobile-toggle-btn p-2 font-semibold text-sm whitespace-nowrap active';
+            allBtn.textContent = 'All';
+            platformFilters.appendChild(allBtn);
 
-        // Bind mobile bottom nav actions
-        document.querySelectorAll('#mobile-bottom-nav .bottom-nav-btn, #mobile-bottom-nav-player .bottom-nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = (btn as HTMLElement).dataset.view;
-                if (!view) return;
-                if (view !== 'more' && !moreMenuModal.classList.contains('hidden')) closeModal(moreMenuModal);
-                
-                switch(view) {
-                    case 'feed': closePlayerView(); break;
-                    case 'live': openLiveView(); break;
-                    case 'hoggwild': startHoggWildStream(); break;
-                    case 'buffet': openBuffetView(); break;
-                    case 'more': openModal(moreMenuModal); break;
-                }
+            state.platforms.forEach(p => {
+                const btn = document.createElement('button');
+                btn.dataset.platform = p.id;
+                btn.className = 'mobile-toggle-btn p-2 font-semibold text-sm whitespace-nowrap';
+                btn.textContent = p.name;
+                platformFilters.appendChild(btn);
             });
-        });
-        
-        // Set up desktop columns
-        desktopDashboard.innerHTML = '';
-        state.platforms.forEach(platform => {
-            state.allVideos[platform.id] = [];
-            state.pageTrackers[platform.id] = 1;
-            renderDashboardColumn(platform);
-        });
-        
-        bindEventListeners();
-        
-        document.addEventListener('youtube-api-ready', () => {
-            state.ytPlayer = new YT.Player('youtube-player', {
-                height: '100%', width: '100%',
-                playerVars: { 'playsinline': 1, 'controls': 0, 'rel': 0, 'showinfo': 0, 'modestbranding': 1 },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
-            });
-        });
-        
-        await loadMoreVideos();
-        renderMobileFeed();
-        checkForNewLiveVideos();
-        state.liveUpdateInterval = window.setInterval(checkForNewLiveVideos, 30000);
 
-        // Fade out loading screen
-        const loadingScreen = document.getElementById('loading-screen');
-        if(loadingScreen) {
-            loadingScreen.classList.add('opacity-0');
-            setTimeout(() => loadingScreen.remove(), 500);
+            const mobileFeedContent = document.createElement('div');
+            mobileFeedContent.id = 'mobile-feed-content';
+            
+            mobileDashboardContainer.append(platformFilters, mobileFeedContent);
         }
+
+        state.platforms.forEach(renderDashboardColumn);
+        await loadMoreVideos();
+
+        state.liveUpdateInterval = window.setInterval(checkForNewLiveVideos, 15000);
+        checkForNewLiveVideos();
+        updateNavStates('feed');
     };
 
     initializeApp();
