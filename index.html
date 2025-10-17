@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Paytone+One&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <link rel="stylesheet" href="index.css">
 <script type="importmap">
 {
@@ -57,6 +58,9 @@
                      </button>
                     <button id="add-feed-btn" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white text-sm font-brand tracking-wider w-28 text-center">
                         FEED ME
+                    </button>
+                    <button id="newsroom-btn" data-view="newsroom" class="nav-btn p-2 rounded-md bg-gray-700 border border-pink-600 text-white text-sm font-brand tracking-wider w-28 text-center">
+                        NEWSROOM
                     </button>
                 </div>
             </div>
@@ -186,6 +190,30 @@
         <main id="platform-dashboard" class="flex-grow hidden md:flex px-4 pb-4 gap-4 overflow-x-auto">
             <!-- Platform columns will be injected here -->
         </main>
+
+        <!-- Newsroom View -->
+        <div id="newsroom-view" class="hidden flex-grow flex-col">
+            <div class="p-4 bg-gray-800 border-b border-gray-700">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-pink-400">Hog-Wash</h2>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <label for="grid-size" class="text-sm font-medium">Grid Size:</label>
+                            <select id="grid-size" class="bg-gray-700 border border-gray-600 rounded-md px-2 py-1 text-sm">
+                                <option value="1">1x1</option>
+                                <option value="2">2x2</option>
+                                <option value="3">3x3</option>
+                                <option value="4">4x4</option>
+                            </select>
+                        </div>
+                        <button id="manage-streams-btn" class="text-sm font-medium text-pink-400 hover:underline">Manage Streams</button>
+                    </div>
+                </div>
+            </div>
+            <div id="video-grid" class="flex-grow p-4 bg-gray-900 grid gap-4">
+                <!-- Video cells will be injected here -->
+            </div>
+        </div>
         
         <div id="loader" class="text-center py-10 hidden">
              <svg class="animate-spin h-8 w-8 text-pink-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -285,6 +313,40 @@
     <div id="notification" class="fixed bottom-5 right-5 bg-pink-600 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-70" role="status" aria-live="polite">
         Notification Message
     </div>
+
+    <!-- Stream Management Modal -->
+    <div id="stream-manager-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true" aria-labelledby="stream-manager-title">
+        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-lg">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 id="stream-manager-title" class="font-bold text-xl">Manage Streams</h3>
+                <button id="close-stream-manager-btn" class="p-2 rounded-full hover:bg-gray-700" aria-label="Close dialog">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 space-y-4">
+                <div>
+                    <h4 class="font-semibold mb-2">Add New Stream</h4>
+                    <form id="add-stream-form" class="flex flex-col gap-2">
+                        <input id="stream-name" type="text" placeholder="Stream Name (e.g., 'News Feed')" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                        <input id="stream-url" type="url" placeholder="Stream URL (e.g., 'https://.../stream.m3u8')" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                        <select id="stream-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            <option value="application/x-mpegURL">HLS (.m3u8)</option>
+                            <option value="video/youtube">YouTube</option>
+                        </select>
+                        <button type="submit" class="bg-pink-600 text-white hover:bg-pink-700 transition-colors px-4 py-2 rounded-lg font-semibold">Add Stream</button>
+                    </form>
+                </div>
+                <div class="border-t border-gray-700"></div>
+                <div>
+                    <h4 class="font-semibold mb-2">Saved Streams</h4>
+                    <div id="saved-streams-list" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Saved streams will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="index.tsx"></script>
 </body>
 </html>

@@ -9,11 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.22.0"
+    "@google/genai": "^1.22.0",
+    "@types/video.js": "^7.3.58",
+    "video.js": "^8.23.4",
+    "videojs-youtube": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
-    
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
